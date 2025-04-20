@@ -16,13 +16,17 @@
       "performance": {
         "noDelete": "warn"
       }
-    }
+    },
+    "ignore": ["package.json"],
+    "include": ["src/**/*.{ts,tsx,js,jsx}", "tests/**/*.{ts,tsx,js,jsx}"]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 80
+    "lineWidth": 80,
+    "ignore": ["package.json"],
+    "include": ["src/**/*.{ts,tsx,js,jsx}", "tests/**/*.{ts,tsx,js,jsx}"]
   },
   "javascript": {
     "formatter": {
