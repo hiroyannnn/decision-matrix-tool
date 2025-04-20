@@ -36,7 +36,7 @@
 - リンター＆フォーマッター: Biome
 - テストフレームワーク: Vitest
 - データ保存: LocalStorage
-- デプロイ: GitHub Pages（予定）
+- デプロイ: GitHub Pages（GitHub Actionsによる自動デプロイ）
 
 ## 開発環境のセットアップ
 
@@ -82,7 +82,7 @@ pnpm test:ui
 # テストカバレッジの確認
 pnpm test:coverage
 
-# GitHub Pagesへのデプロイ
+# GitHub Pagesへのデプロイ（手動）
 pnpm deploy
 ```
 
@@ -102,10 +102,23 @@ pnpm deploy
 
 ## デプロイ
 
+### 手動デプロイ
+
 ```bash
-# GitHub Pagesへのデプロイ
+# GitHub Pagesへの手動デプロイ
 pnpm deploy
 ```
+
+### 自動デプロイ（GitHub Actions）
+
+このプロジェクトはGitHub Actionsを使用して自動デプロイを行うように設定されています。
+`main`ブランチへのプッシュ時に自動的にビルドとデプロイが実行されます。
+
+GitHub Actionsの設定を有効にするには：
+
+1. リポジトリの「Settings」タブを開く
+2. 左側のメニューから「Pages」を選択
+3. 「Source」セクションで「GitHub Actions」を選択
 
 ## 今後の機能拡張予定
 
