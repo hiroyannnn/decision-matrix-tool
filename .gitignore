@@ -5,6 +5,7 @@
 
 # テスト
 /coverage
+.vitest-cache/
 
 # 本番ビルド
 /build
@@ -15,6 +16,9 @@
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Biome
+.biome/
 
 npm-debug.log*
 yarn-debug.log*

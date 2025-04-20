@@ -33,6 +33,8 @@
 ## 技術スタック
 
 - フロントエンド: React + Tailwind CSS
+- リンター＆フォーマッター: Biome
+- テストフレームワーク: Vitest
 - データ保存: LocalStorage
 - デプロイ: GitHub Pages（予定）
 
@@ -44,17 +46,65 @@ git clone https://github.com/yourusername/decision-matrix-tool.git
 cd decision-matrix-tool
 
 # 依存関係のインストール
-npm install
+pnpm install
 
 # 開発サーバーの起動
-npm start
+pnpm start
 ```
+
+## 開発用スクリプト
+
+```bash
+# 開発サーバーの起動
+pnpm start
+
+# ビルド
+pnpm build
+
+# リンターによるコードチェック
+pnpm lint
+
+# リンターによる自動修正
+pnpm lint:fix
+
+# コードフォーマット
+pnpm format
+
+# テストの実行
+pnpm test
+
+# ウォッチモードでのテスト実行
+pnpm test:watch
+
+# テストUIの起動
+pnpm test:ui
+
+# テストカバレッジの確認
+pnpm test:coverage
+
+# GitHub Pagesへのデプロイ
+pnpm deploy
+```
+
+## リンターとテスト
+
+このプロジェクトでは以下のツールを使用しています：
+
+- **Biome**: JavaScriptとTypeScriptのリンターおよびフォーマッター
+  - ESLintとPrettierの代替として使用
+  - 高速で設定が簡単
+  - `biome.json`で設定を管理
+
+- **Vitest**: 高速なユニットテストフレームワーク
+  - Jest互換のAPIを提供
+  - Vitestのテスト設定は`vitest.config.js`で管理
+  - `happy-dom`をテスト環境として使用
 
 ## デプロイ
 
 ```bash
 # GitHub Pagesへのデプロイ
-npm run deploy
+pnpm deploy
 ```
 
 ## 今後の機能拡張予定
