@@ -1,11 +1,11 @@
-import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { describe, expect, it, vi } from "vitest";
 
 // サンプルコンポーネント
 const Button = ({ onClick, children }) => {
   return (
-    <button onClick={onClick} data-testid="test-button">
+    <button onClick={onClick} data-testid="test-button" type="button">
       {children}
     </button>
   );
@@ -21,13 +21,12 @@ describe("Button", () => {
   });
 
   it("クリックするとイベントハンドラーが呼ばれる", async () => {
-    const user = userEvent.setup();
     const handleClick = vi.fn();
 
     render(<Button onClick={handleClick}>クリック</Button>);
 
     const buttonElement = screen.getByTestId("test-button");
-    await user.click(buttonElement);
+    await userEvent.click(buttonElement);
 
     expect(handleClick).toHaveBeenCalledTimes(1);
   });

@@ -1,55 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const DecisionMatrixApp = () => {
   const [matrices, setMatrices] = useState([]);
   const [currentMatrix, setCurrentMatrix] = useState({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     quadrants: {
-      'plusPlus': { title: '++', items: [] },
-      'plusMinus': { title: '+-', items: [] },
-      'minusPlus': { title: '-+', items: [] },
-      'minusMinus': { title: '--', items: [] }
+      plusPlus: { title: "++", items: [] },
+      plusMinus: { title: "+-", items: [] },
+      minusPlus: { title: "-+", items: [] },
+      minusMinus: { title: "--", items: [] },
     },
-    reflection: ''
+    reflection: "",
   });
-  const [newItem, setNewItem] = useState('');
-  const [activeQuadrant, setActiveQuadrant] = useState('plusPlus');
+  const [newItem, setNewItem] = useState("");
+  const [activeQuadrant, setActiveQuadrant] = useState("plusPlus");
   const [currentStep, setCurrentStep] = useState(0);
   const [savedMatrices, setSavedMatrices] = useState([]);
-  const [viewMode, setViewMode] = useState('edit'); // 'edit' または 'view'
+  const [viewMode, setViewMode] = useState("edit"); // 'edit' または 'view'
 
   // ステップの説明
   const steps = [
-    '1. マトリックスのタイトルを入力してください（例：「転職の選択」）',
-    '2. ++: それを選択したら得られることを入力してください',
-    '3. +-: それを選択したら失うことを入力してください',
-    '4. -+: それを選択しなかったら得られることを入力してください',
-    '5. --: それを選択しなかったら失うことを入力してください',
-    '6. 全体を見て、あなたの選択を振り返ってください'
+    "1. マトリックスのタイトルを入力してください（例：「転職の選択」）",
+    "2. ++: それを選択したら得られることを入力してください",
+    "3. +-: それを選択したら失うことを入力してください",
+    "4. -+: それを選択しなかったら得られることを入力してください",
+    "5. --: それを選択しなかったら失うことを入力してください",
+    "6. 全体を見て、あなたの選択を振り返ってください",
   ];
 
   // 象限の日本語説明
   const quadrantDescriptions = {
-    'plusPlus': 'これを選択したら得られること',
-    'plusMinus': 'これを選択したら失うこと',
-    'minusPlus': 'これを選択しなかったら得られること',
-    'minusMinus': 'これを選択しなかったら失うこと'
+    plusPlus: "これを選択したら得られること",
+    plusMinus: "これを選択したら失うこと",
+    minusPlus: "これを選択しなかったら得られること",
+    minusMinus: "これを選択しなかったら失うこと",
   };
 
   // 象限のマッピング
   const stepToQuadrant = {
     1: null, // タイトル入力ステップ
-    2: 'plusPlus',
-    3: 'plusMinus',
-    4: 'minusPlus',
-    5: 'minusMinus',
-    6: null // 振り返りステップ
+    2: "plusPlus",
+    3: "plusMinus",
+    4: "minusPlus",
+    5: "minusMinus",
+    6: null, // 振り返りステップ
   };
 
   // ローカルストレージから保存されたマトリックスを読み込む
   useEffect(() => {
-    const savedData = localStorage.getItem('decisionMatrices');
+    const savedData = localStorage.getItem("decisionMatrices");
     if (savedData) {
       setSavedMatrices(JSON.parse(savedData));
     }
@@ -65,25 +65,27 @@ const DecisionMatrixApp = () => {
 
   // 新しいアイテムを現在の象限に追加する
   const addItemToQuadrant = () => {
-    if (newItem.trim() === '') return;
+    if (newItem.trim() === "") return;
 
-    setCurrentMatrix(prev => {
+    setCurrentMatrix((prev) => {
       const updatedQuadrants = { ...prev.quadrants };
       updatedQuadrants[activeQuadrant].items = [
         ...updatedQuadrants[activeQuadrant].items,
-        newItem.trim()
+        newItem.trim(),
       ];
       return { ...prev, quadrants: updatedQuadrants };
     });
 
-    setNewItem('');
+    setNewItem("");
   };
 
   // アイテムを削除する
   const removeItem = (quadrant, index) => {
-    setCurrentMatrix(prev => {
+    setCurrentMatrix((prev) => {
       const updatedQuadrants = { ...prev.quadrants };
-      updatedQuadrants[quadrant].items = updatedQuadrants[quadrant].items.filter((_, i) => i !== index);
+      updatedQuadrants[quadrant].items = updatedQuadrants[
+        quadrant
+      ].items.filter((_, i) => i !== index);
       return { ...prev, quadrants: updatedQuadrants };
     });
   };
@@ -92,56 +94,56 @@ const DecisionMatrixApp = () => {
   const saveMatrix = () => {
     const matrixToSave = { ...currentMatrix, date: new Date().toISOString() };
     const updatedMatrices = [...savedMatrices, matrixToSave];
-    localStorage.setItem('decisionMatrices', JSON.stringify(updatedMatrices));
+    localStorage.setItem("decisionMatrices", JSON.stringify(updatedMatrices));
     setSavedMatrices(updatedMatrices);
 
     // 新しいマトリックスを開始
     setCurrentMatrix({
-      title: '',
-      description: '',
+      title: "",
+      description: "",
       quadrants: {
-        'plusPlus': { title: '++', items: [] },
-        'plusMinus': { title: '+-', items: [] },
-        'minusPlus': { title: '-+', items: [] },
-        'minusMinus': { title: '--', items: [] }
+        plusPlus: { title: "++", items: [] },
+        plusMinus: { title: "+-", items: [] },
+        minusPlus: { title: "-+", items: [] },
+        minusMinus: { title: "--", items: [] },
       },
-      reflection: ''
+      reflection: "",
     });
     setCurrentStep(0);
-    setViewMode('edit');
+    setViewMode("edit");
   };
 
   // 保存されたマトリックスを読み込む
   const loadMatrix = (index) => {
     setCurrentMatrix(savedMatrices[index]);
     setCurrentStep(6); // 最終ステップ（振り返り）に設定
-    setViewMode('view');
+    setViewMode("view");
   };
 
   // 保存されたマトリックスを削除する
   const deleteMatrix = (index) => {
     const updatedMatrices = savedMatrices.filter((_, i) => i !== index);
-    localStorage.setItem('decisionMatrices', JSON.stringify(updatedMatrices));
+    localStorage.setItem("decisionMatrices", JSON.stringify(updatedMatrices));
     setSavedMatrices(updatedMatrices);
   };
 
   // 次のステップに進む
   const nextStep = () => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep(prev => prev + 1);
+      setCurrentStep((prev) => prev + 1);
     }
   };
 
   // 前のステップに戻る
   const prevStep = () => {
     if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
+      setCurrentStep((prev) => prev - 1);
     }
   };
 
   // エンターキーでアイテムを追加
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       addItemToQuadrant();
     }
   };
@@ -196,14 +198,14 @@ const DecisionMatrixApp = () => {
               <button
                 onClick={prevStep}
                 disabled={currentStep === 0}
-                className={`px-4 py-2 rounded ${currentStep === 0 ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}
+                className={`px-4 py-2 rounded ${currentStep === 0 ? "bg-gray-300" : "bg-blue-500 text-white"}`}
               >
                 戻る
               </button>
               <button
                 onClick={nextStep}
                 disabled={currentStep === steps.length - 1}
-                className={`px-4 py-2 rounded ${currentStep === steps.length - 1 ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}
+                className={`px-4 py-2 rounded ${currentStep === steps.length - 1 ? "bg-gray-300" : "bg-blue-500 text-white"}`}
               >
                 次へ
               </button>
@@ -214,18 +216,29 @@ const DecisionMatrixApp = () => {
         {/* マトリックスのタイトル入力 (ステップ1) */}
         {currentStep === 0 && (
           <div className="bg-white p-4 rounded shadow mb-6">
-            <h2 className="text-xl font-semibold mb-2">マトリックスのタイトル</h2>
+            <h2 className="text-xl font-semibold mb-2">
+              マトリックスのタイトル
+            </h2>
             <input
               type="text"
               value={currentMatrix.title}
-              onChange={(e) => setCurrentMatrix(prev => ({ ...prev, title: e.target.value }))}
+              onChange={(e) =>
+                setCurrentMatrix((prev) => ({ ...prev, title: e.target.value }))
+              }
               placeholder="例: 転職の選択、引っ越しの判断、など"
               className="w-full p-2 border rounded mb-4"
             />
-            <h2 className="text-xl font-semibold mb-2">詳細情報 (オプション)</h2>
+            <h2 className="text-xl font-semibold mb-2">
+              詳細情報 (オプション)
+            </h2>
             <textarea
               value={currentMatrix.description}
-              onChange={(e) => setCurrentMatrix(prev => ({ ...prev, description: e.target.value }))}
+              onChange={(e) =>
+                setCurrentMatrix((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
+              }
               placeholder="選択肢についての詳細や背景など"
               className="w-full p-2 border rounded h-24"
             />
@@ -233,10 +246,11 @@ const DecisionMatrixApp = () => {
         )}
 
         {/* 象限入力 (ステップ2-5) */}
-        {(currentStep >= 1 && currentStep <= 4) && (
+        {currentStep >= 1 && currentStep <= 4 && (
           <div className="bg-white p-4 rounded shadow mb-6">
             <h2 className="text-xl font-semibold mb-2">
-              {quadrantDescriptions[activeQuadrant]} ({currentMatrix.quadrants[activeQuadrant].title})
+              {quadrantDescriptions[activeQuadrant]} (
+              {currentMatrix.quadrants[activeQuadrant].title})
             </h2>
 
             <div className="flex mb-4">
@@ -257,17 +271,22 @@ const DecisionMatrixApp = () => {
             </div>
 
             <ul className="bg-gray-50 p-2 rounded">
-              {currentMatrix.quadrants[activeQuadrant].items.map((item, index) => (
-                <li key={index} className="flex justify-between items-center p-2 border-b">
-                  <span>{item}</span>
-                  <button
-                    onClick={() => removeItem(activeQuadrant, index)}
-                    className="text-red-500"
+              {currentMatrix.quadrants[activeQuadrant].items.map(
+                (item, index) => (
+                  <li
+                    key={index}
+                    className="flex justify-between items-center p-2 border-b"
                   >
-                    ×
-                  </button>
-                </li>
-              ))}
+                    <span>{item}</span>
+                    <button
+                      onClick={() => removeItem(activeQuadrant, index)}
+                      className="text-red-500"
+                    >
+                      ×
+                    </button>
+                  </li>
+                )
+              )}
               {currentMatrix.quadrants[activeQuadrant].items.length === 0 && (
                 <li className="p-2 text-gray-500">まだ項目がありません</li>
               )}
@@ -278,7 +297,9 @@ const DecisionMatrixApp = () => {
         {/* 振り返り (ステップ6) */}
         {currentStep === 5 && (
           <div className="bg-white p-4 rounded shadow mb-6">
-            <h2 className="text-xl font-semibold mb-4">{currentMatrix.title} - 全体の振り返り</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              {currentMatrix.title} - 全体の振り返り
+            </h2>
 
             {/* マトリックス表示 */}
             <div className="grid grid-cols-2 gap-4 mb-6">
@@ -299,7 +320,9 @@ const DecisionMatrixApp = () => {
                 </ul>
               </div>
               <div className="bg-blue-50 p-4 rounded">
-                <h3 className="font-bold mb-2">-+ 選択しなかったら得られること</h3>
+                <h3 className="font-bold mb-2">
+                  -+ 選択しなかったら得られること
+                </h3>
                 <ul className="list-disc pl-5">
                   {currentMatrix.quadrants.minusPlus.items.map((item, i) => (
                     <li key={i}>{item}</li>
@@ -324,7 +347,12 @@ const DecisionMatrixApp = () => {
               </p>
               <textarea
                 value={currentMatrix.reflection}
-                onChange={(e) => setCurrentMatrix(prev => ({ ...prev, reflection: e.target.value }))}
+                onChange={(e) =>
+                  setCurrentMatrix((prev) => ({
+                    ...prev,
+                    reflection: e.target.value,
+                  }))
+                }
                 placeholder="全体を見た感想や、最終的な決断、「選択したら失うこと」への対処法などを記入してください..."
                 className="w-full p-2 border rounded h-32"
               />
@@ -340,9 +368,11 @@ const DecisionMatrixApp = () => {
         )}
 
         {/* 表示モード */}
-        {viewMode === 'view' && currentStep === 6 && (
+        {viewMode === "view" && currentStep === 6 && (
           <div className="bg-white p-4 rounded shadow mb-6">
-            <h2 className="text-xl font-semibold mb-4">{currentMatrix.title}</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              {currentMatrix.title}
+            </h2>
 
             {currentMatrix.description && (
               <div className="mb-4 p-2 bg-gray-50 rounded">
@@ -369,7 +399,9 @@ const DecisionMatrixApp = () => {
                 </ul>
               </div>
               <div className="bg-blue-50 p-4 rounded">
-                <h3 className="font-bold mb-2">-+ 選択しなかったら得られること</h3>
+                <h3 className="font-bold mb-2">
+                  -+ 選択しなかったら得られること
+                </h3>
                 <ul className="list-disc pl-5">
                   {currentMatrix.quadrants.minusPlus.items.map((item, i) => (
                     <li key={i}>{item}</li>
@@ -396,7 +428,7 @@ const DecisionMatrixApp = () => {
             )}
 
             <button
-              onClick={() => setViewMode('edit')}
+              onClick={() => setViewMode("edit")}
               className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
             >
               編集モードに切り替え
@@ -404,18 +436,18 @@ const DecisionMatrixApp = () => {
             <button
               onClick={() => {
                 setCurrentMatrix({
-                  title: '',
-                  description: '',
+                  title: "",
+                  description: "",
                   quadrants: {
-                    'plusPlus': { title: '++', items: [] },
-                    'plusMinus': { title: '+-', items: [] },
-                    'minusPlus': { title: '-+', items: [] },
-                    'minusMinus': { title: '--', items: [] }
+                    plusPlus: { title: "++", items: [] },
+                    plusMinus: { title: "+-", items: [] },
+                    minusPlus: { title: "-+", items: [] },
+                    minusMinus: { title: "--", items: [] },
                   },
-                  reflection: ''
+                  reflection: "",
                 });
                 setCurrentStep(0);
-                setViewMode('edit');
+                setViewMode("edit");
               }}
               className="bg-green-500 text-white px-4 py-2 rounded"
             >

@@ -1,6 +1,6 @@
-import React from 'react';
-import DecisionMatrixApp from './components/DecisionMatrixApp';
-import './App.css';
+import React from "react";
+import DecisionMatrixApp from "./components/DecisionMatrixApp";
+import "./App.css";
 
 function App() {
   return (
