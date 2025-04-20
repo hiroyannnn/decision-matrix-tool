@@ -2,6 +2,7 @@
   "name": "decision-matrix-tool",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://hiroyannnn.github.io/decision-matrix-tool",
   "scripts": {
     "start": "react-scripts start",
     "dev": "react-scripts start",

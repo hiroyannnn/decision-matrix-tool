@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../styles.css";
+import "../index.css";
 
 const DecisionMatrixApp = () => {
   const [matrices, setMatrices] = useState([]);

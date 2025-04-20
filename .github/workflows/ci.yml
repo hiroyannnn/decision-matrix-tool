@@ -1,13 +1,13 @@
-name: Deploy to GitHub Pages
+name: CI
 
 on:
-  push:
+  pull_request:
     branches: [ main ]
   # 手動トリガーも追加
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,9 +33,3 @@ jobs:
 
       - name: Build 🏗️
         run: pnpm build
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: build    # Reactアプリのビルド出力ディレクトリ
-          branch: gh-pages # デプロイ先ブランチ
