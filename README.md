@@ -119,6 +119,14 @@ pnpm deploy
 
 プルリクエストやイシューの報告は大歓迎です。まずはイシューで議論を始めてください。
 
+コントリビュートする際は以下の手順に従ってください：
+
+1. リポジトリをフォークする
+2. 機能ブランチを作成する (`git checkout -b feature/amazing-feature`)
+3. 変更をコミットする (`git commit -m 'Add some amazing feature'`)
+4. ブランチをプッシュする (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成する
+
 ## ライセンス
 
 MIT
