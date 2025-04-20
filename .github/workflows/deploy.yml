@@ -9,6 +9,9 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    # 権限設定を追加
+    permissions:
+      contents: write  # GitHub Pagesにデプロイするために必要
 
     steps:
       - name: Checkout 🛎️
