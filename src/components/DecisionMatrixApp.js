@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../styles.css";
 
 const DecisionMatrixApp = () => {
   const [matrices, setMatrices] = useState([]);
@@ -18,6 +19,9 @@ const DecisionMatrixApp = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [savedMatrices, setSavedMatrices] = useState([]);
   const [viewMode, setViewMode] = useState("edit"); // 'edit' または 'view'
+
+  // リストアイテムのIDカウンター
+  const [nextItemId, setNextItemId] = useState(1);
 
   // ステップの説明
   const steps = [
@@ -69,23 +73,30 @@ const DecisionMatrixApp = () => {
 
     setCurrentMatrix((prev) => {
       const updatedQuadrants = { ...prev.quadrants };
-      updatedQuadrants[activeQuadrant].items = [
-        ...updatedQuadrants[activeQuadrant].items,
-        newItem.trim(),
-      ];
+      updatedQuadrants[activeQuadrant] = {
+        ...updatedQuadrants[activeQuadrant],
+        items: [
+          ...updatedQuadrants[activeQuadrant].items,
+          { id: nextItemId, text: newItem.trim() },
+        ],
+      };
       return { ...prev, quadrants: updatedQuadrants };
     });
 
+    setNextItemId((prevId) => prevId + 1);
     setNewItem("");
   };
 
   // アイテムを削除する
-  const removeItem = (quadrant, index) => {
+  const removeItem = (quadrant, itemId) => {
     setCurrentMatrix((prev) => {
       const updatedQuadrants = { ...prev.quadrants };
-      updatedQuadrants[quadrant].items = updatedQuadrants[
-        quadrant
-      ].items.filter((_, i) => i !== index);
+      updatedQuadrants[quadrant] = {
+        ...updatedQuadrants[quadrant],
+        items: updatedQuadrants[quadrant].items.filter(
+          (item) => item.id !== itemId
+        ),
+      };
       return { ...prev, quadrants: updatedQuadrants };
     });
   };
@@ -115,8 +126,34 @@ const DecisionMatrixApp = () => {
 
   // 保存されたマトリックスを読み込む
   const loadMatrix = (index) => {
-    setCurrentMatrix(savedMatrices[index]);
-    setCurrentStep(6); // 最終ステップ（振り返り）に設定
+    const loadedMatrix = savedMatrices[index];
+
+    // 古いデータ形式対応（文字列の配列を{id, text}オブジェクトの配列に変換）
+    const updatedMatrix = {
+      ...loadedMatrix,
+      quadrants: Object.keys(loadedMatrix.quadrants).reduce((acc, quadKey) => {
+        const items = loadedMatrix.quadrants[quadKey].items.map((item, idx) => {
+          return typeof item === "string"
+            ? { id: nextItemId + idx, text: item }
+            : item;
+        });
+
+        acc[quadKey] = {
+          ...loadedMatrix.quadrants[quadKey],
+          items,
+        };
+        return acc;
+      }, {}),
+    };
+
+    // 次に使用するIDを更新
+    const maxId = Object.values(updatedMatrix.quadrants)
+      .flatMap((q) => q.items)
+      .reduce((max, item) => Math.max(max, item.id), nextItemId);
+
+    setNextItemId(maxId + 1);
+    setCurrentMatrix(updatedMatrix);
+    setCurrentStep(6);
     setViewMode("view");
   };
 
@@ -162,19 +199,24 @@ const DecisionMatrixApp = () => {
             <h2 className="text-xl font-semibold mb-2">保存したマトリックス</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {savedMatrices.map((matrix, index) => (
-                <div key={index} className="bg-white p-4 rounded shadow">
+                <div
+                  key={`matrix-${matrix.date}-${index}`}
+                  className="bg-white p-4 rounded shadow"
+                >
                   <h3 className="font-bold">{matrix.title}</h3>
                   <p className="text-sm text-gray-500">
                     {new Date(matrix.date).toLocaleDateString()}
                   </p>
                   <div className="mt-2 flex space-x-2">
                     <button
+                      type="button"
                       onClick={() => loadMatrix(index)}
                       className="bg-blue-500 text-white px-2 py-1 rounded text-sm"
                     >
                       表示
                     </button>
                     <button
+                      type="button"
                       onClick={() => deleteMatrix(index)}
                       className="bg-red-500 text-white px-2 py-1 rounded text-sm"
                     >
@@ -196,6 +238,7 @@ const DecisionMatrixApp = () => {
             {/* ステップナビゲーション */}
             <div className="flex justify-between mt-4">
               <button
+                type="button"
                 onClick={prevStep}
                 disabled={currentStep === 0}
                 className={`px-4 py-2 rounded ${currentStep === 0 ? "bg-gray-300" : "bg-blue-500 text-white"}`}
@@ -203,6 +246,7 @@ const DecisionMatrixApp = () => {
                 戻る
               </button>
               <button
+                type="button"
                 onClick={nextStep}
                 disabled={currentStep === steps.length - 1}
                 className={`px-4 py-2 rounded ${currentStep === steps.length - 1 ? "bg-gray-300" : "bg-blue-500 text-white"}`}
@@ -263,6 +307,7 @@ const DecisionMatrixApp = () => {
                 className="flex-grow p-2 border rounded-l"
               />
               <button
+                type="button"
                 onClick={addItemToQuadrant}
                 className="bg-blue-500 text-white px-4 py-2 rounded-r"
               >
@@ -271,22 +316,21 @@ const DecisionMatrixApp = () => {
             </div>
 
             <ul className="bg-gray-50 p-2 rounded">
-              {currentMatrix.quadrants[activeQuadrant].items.map(
-                (item, index) => (
-                  <li
-                    key={index}
-                    className="flex justify-between items-center p-2 border-b"
+              {currentMatrix.quadrants[activeQuadrant].items.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex justify-between items-center p-2 border-b"
+                >
+                  <span>{item.text}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeItem(activeQuadrant, item.id)}
+                    className="text-red-500"
                   >
-                    <span>{item}</span>
-                    <button
-                      onClick={() => removeItem(activeQuadrant, index)}
-                      className="text-red-500"
-                    >
-                      ×
-                    </button>
-                  </li>
-                )
-              )}
+                    ×
+                  </button>
+                </li>
+              ))}
               {currentMatrix.quadrants[activeQuadrant].items.length === 0 && (
                 <li className="p-2 text-gray-500">まだ項目がありません</li>
               )}
@@ -306,16 +350,16 @@ const DecisionMatrixApp = () => {
               <div className="bg-green-50 p-4 rounded">
                 <h3 className="font-bold mb-2">++ 選択したら得られること</h3>
                 <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.plusPlus.items.map((item, i) => (
-                    <li key={i}>{item}</li>
+                  {currentMatrix.quadrants.plusPlus.items.map((item) => (
+                    <li key={item.id}>{item.text}</li>
                   ))}
                 </ul>
               </div>
               <div className="bg-yellow-50 p-4 rounded">
                 <h3 className="font-bold mb-2">+- 選択したら失うこと</h3>
                 <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.plusMinus.items.map((item, i) => (
-                    <li key={i}>{item}</li>
+                  {currentMatrix.quadrants.plusMinus.items.map((item) => (
+                    <li key={item.id}>{item.text}</li>
                   ))}
                 </ul>
               </div>
@@ -324,16 +368,16 @@ const DecisionMatrixApp = () => {
                   -+ 選択しなかったら得られること
                 </h3>
                 <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.minusPlus.items.map((item, i) => (
-                    <li key={i}>{item}</li>
+                  {currentMatrix.quadrants.minusPlus.items.map((item) => (
+                    <li key={item.id}>{item.text}</li>
                   ))}
                 </ul>
               </div>
               <div className="bg-red-50 p-4 rounded">
                 <h3 className="font-bold mb-2">-- 選択しなかったら失うこと</h3>
                 <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.minusMinus.items.map((item, i) => (
-                    <li key={i}>{item}</li>
+                  {currentMatrix.quadrants.minusMinus.items.map((item) => (
+                    <li key={item.id}>{item.text}</li>
                   ))}
                 </ul>
               </div>
@@ -359,6 +403,7 @@ const DecisionMatrixApp = () => {
             </div>
 
             <button
+              type="button"
               onClick={saveMatrix}
               className="w-full bg-green-500 text-white px-4 py-2 rounded"
             >
@@ -385,16 +430,16 @@ const DecisionMatrixApp = () => {
               <div className="bg-green-50 p-4 rounded">
                 <h3 className="font-bold mb-2">++ 選択したら得られること</h3>
                 <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.plusPlus.items.map((item, i) => (
-                    <li key={i}>{item}</li>
+                  {currentMatrix.quadrants.plusPlus.items.map((item) => (
+                    <li key={item.id}>{item.text}</li>
                   ))}
                 </ul>
               </div>
               <div className="bg-yellow-50 p-4 rounded">
                 <h3 className="font-bold mb-2">+- 選択したら失うこと</h3>
                 <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.plusMinus.items.map((item, i) => (
-                    <li key={i}>{item}</li>
+                  {currentMatrix.quadrants.plusMinus.items.map((item) => (
+                    <li key={item.id}>{item.text}</li>
                   ))}
                 </ul>
               </div>
@@ -403,16 +448,16 @@ const DecisionMatrixApp = () => {
                   -+ 選択しなかったら得られること
                 </h3>
                 <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.minusPlus.items.map((item, i) => (
-                    <li key={i}>{item}</li>
+                  {currentMatrix.quadrants.minusPlus.items.map((item) => (
+                    <li key={item.id}>{item.text}</li>
                   ))}
                 </ul>
               </div>
               <div className="bg-red-50 p-4 rounded">
                 <h3 className="font-bold mb-2">-- 選択しなかったら失うこと</h3>
                 <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.minusMinus.items.map((item, i) => (
-                    <li key={i}>{item}</li>
+                  {currentMatrix.quadrants.minusMinus.items.map((item) => (
+                    <li key={item.id}>{item.text}</li>
                   ))}
                 </ul>
               </div>
@@ -428,12 +473,14 @@ const DecisionMatrixApp = () => {
             )}
 
             <button
+              type="button"
               onClick={() => setViewMode("edit")}
               className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
             >
               編集モードに切り替え
             </button>
             <button
+              type="button"
               onClick={() => {
                 setCurrentMatrix({
                   title: "",
