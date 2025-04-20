@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import "../styles.css";
+import React, { useState, useEffect, useMemo } from "react";
+import "../index.css";
 
 const DecisionMatrixApp = () => {
-  const [matrices, setMatrices] = useState([]);
   const [currentMatrix, setCurrentMatrix] = useState({
     title: "",
     description: "",
@@ -42,14 +41,14 @@ const DecisionMatrixApp = () => {
   };
 
   // 象限のマッピング
-  const stepToQuadrant = {
+  const stepToQuadrant = useMemo(() => ({
     1: null, // タイトル入力ステップ
     2: "plusPlus",
     3: "plusMinus",
     4: "minusPlus",
     5: "minusMinus",
     6: null, // 振り返りステップ
-  };
+  }), []);
 
   // ローカルストレージから保存されたマトリックスを読み込む
   useEffect(() => {
@@ -65,7 +64,7 @@ const DecisionMatrixApp = () => {
     if (quadrant) {
       setActiveQuadrant(quadrant);
     }
-  }, [currentStep]);
+  }, [currentStep, stepToQuadrant]);
 
   // 新しいアイテムを現在の象限に追加する
   const addItemToQuadrant = () => {
