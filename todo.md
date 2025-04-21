@@ -15,6 +15,10 @@
 - [x] コンポーネントの調整
   - [x] グローバルCSSのインポート問題の修正
   - [x] manifest.jsonからのリソース参照修正
+  - [x] Tailwind CSSの設定更新
+    - [x] `tailwind.config.js`のcontentパス更新
+    - [x] `postcss.config.js`の作成
+    - [x] グローバルCSSファイルの移動と更新
 - [ ] ビルドとローカルテスト
 
 ## Vercelデプロイタスク
