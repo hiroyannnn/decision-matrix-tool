@@ -7,8 +7,9 @@
 /coverage
 .vitest-cache/
 
-# 本番ビルド
-/build
+# Next.js
+/.next/
+/out/
 
 # その他
 .DS_Store
@@ -20,8 +21,7 @@
 # Biome
 .biome/
 
+# ログ
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-.next
