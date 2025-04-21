@@ -10,8 +10,9 @@
   - [x] `next.config.js`の作成
   - [x] `jsconfig.json`またはTypeScriptの場合は`tsconfig.json`の更新
 - [x] ルーティング構造の設定
-  - [x] `pages`ディレクトリの作成
-  - [x] インデックスページの実装
+  - [x] `pages`ディレクトリをsrcディレクトリ内に移動
+  - [x] パスのインポート修正
+  - [x] Biome設定の更新（ESLintからBiomeへ完全移行）
 - [x] コンポーネントの調整
   - [x] グローバルCSSのインポート問題の修正
   - [x] manifest.jsonからのリソース参照修正
@@ -19,6 +20,16 @@
     - [x] `tailwind.config.js`のcontentパス更新
     - [x] `postcss.config.js`の作成
     - [x] グローバルCSSファイルの移動と更新
+- [x] 不要なファイルの整理
+  - [x] CRA関連のファイル削除（App.js, index.js, reportWebVitals.js）
+  - [x] package.jsonから不要なスクリプトと依存関係を削除
+  - [x] .gitignoreをNext.js用に更新
+  - [x] buildディレクトリの削除
+  - [x] ルートのpagesディレクトリを削除
+  - [x] ESLint関連ファイルと設定の削除
+- [x] テスト設定の更新
+  - [x] vitestの設定をNext.js用に更新
+  - [x] Next.js特有の機能のモック追加
 - [ ] ビルドとローカルテスト
 
 ## Vercelデプロイタスク
@@ -76,16 +87,16 @@
      "dev": "next dev",
      "build": "next build",
      "start": "next start",
-     "lint": "next lint"
+     "lint": "biome check ."
    }
    ```
 
 4. 必要なディレクトリ構造を作成:
 
    ```bash
-   mkdir -p pages
+   mkdir -p src/pages
    # または App Routerを使用する場合
-   mkdir -p app
+   mkdir -p src/app
    ```
 
 5. `next.config.js`ファイルを作成:
@@ -100,11 +111,21 @@
 
 6. メインページの移行:
    - srcからのコンポーネントを適切に配置
-   - `pages/index.js`または`app/page.js`を作成
+   - `src/pages/index.js`または`src/app/page.js`を作成
 
 7. スタイリングの調整:
    - グローバルCSSを`styles/global.css`または`app/globals.css`に配置
    - 必要に応じてTailwind CSSの設定を更新
+
+8. Biome設定のアップデート:
+   - `biome.json`の設定を更新してNext.jsをサポート
+   - ESLintからBiomeへ完全に移行
+
+9. 不要なファイルの削除:
+   - CRA関連のファイル（App.js, index.js, reportWebVitals.jsなど）
+   - buildディレクトリ（Next.jsでは.nextディレクトリを使用）
+   - package.jsonから不要なスクリプトと依存関係
+   - ESLint関連のファイルと設定
 
 ## Vercelデプロイの手順メモ
 
