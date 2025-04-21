@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-import "../index.css";
 
 const DecisionMatrixApp = () => {
   const [currentMatrix, setCurrentMatrix] = useState({
