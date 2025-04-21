@@ -146,7 +146,7 @@ const DecisionMatrixApp = () => {
 
     // 次に使用するIDを更新
     const maxId = Object.values(updatedMatrix.quadrants)
-      .flatMap((q) => q.items)
+      .flatMap((q: { items: { id: number, text: string }[] }) => q.items)
       .reduce((max, item) => Math.max(max, item.id), nextItemId);
 
     setNextItemId(maxId + 1);

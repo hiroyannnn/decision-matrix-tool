@@ -23,7 +23,7 @@ export default defineConfig({
       "./src/**/*.{test,spec}.{js,jsx,ts,tsx}",
     ],
     coverage: {
-      provider: "c8",
+      provider: "istanbul",
       reporter: ["text", "json", "html"],
       exclude: [
         "**/node_modules/**",
