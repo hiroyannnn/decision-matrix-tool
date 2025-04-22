@@ -32,7 +32,8 @@
 
 ## 技術スタック
 
-- フロントエンド: React + Tailwind CSS
+- フロントエンド: Next.js + React + Tailwind CSS
+- UIコンポーネント: Radix UI
 - リンター＆フォーマッター: Biome
 - テストフレームワーク: Vitest
 - データ保存: LocalStorage
@@ -49,17 +50,20 @@ cd decision-matrix-tool
 pnpm install
 
 # 開発サーバーの起動
-pnpm start
+pnpm dev
 ```
 
 ## 開発用スクリプト
 
 ```bash
 # 開発サーバーの起動
-pnpm start
+pnpm dev
 
-# ビルド
+# プロダクションビルド
 pnpm build
+
+# プロダクションサーバーの起動
+pnpm start
 
 # リンターによるコードチェック
 pnpm lint
@@ -81,9 +85,6 @@ pnpm test:ui
 
 # テストカバレッジの確認
 pnpm test:coverage
-
-# GitHub Pagesへのデプロイ（手動）
-pnpm deploy
 ```
 
 ## リンターとテスト
@@ -97,17 +98,10 @@ pnpm deploy
 
 - **Vitest**: 高速なユニットテストフレームワーク
   - Jest互換のAPIを提供
-  - Vitestのテスト設定は`vitest.config.js`で管理
+  - Vitestのテスト設定は`vitest.config.ts`で管理
   - `happy-dom`をテスト環境として使用
 
 ## デプロイ
-
-### 手動デプロイ
-
-```bash
-# GitHub Pagesへの手動デプロイ
-pnpm deploy
-```
 
 ### 自動デプロイ（GitHub Actions）
 
