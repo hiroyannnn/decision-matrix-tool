@@ -2,6 +2,10 @@ import React, { useState, useEffect, useMemo } from "react";
 import ReflectionVisibilityToggle from "./ReflectionVisibilityToggle";
 import { Button } from "./atoms/Button";
 import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from "./atoms/Card";
+import QuadrantInput from "./QuadrantInput";
+import MatrixOverview from "./MatrixOverview";
+import StepNavigation from "./StepNavigation";
+import SavedMatricesList from "./SavedMatricesList";
 
 const DecisionMatrixApp = () => {
   const [currentMatrix, setCurrentMatrix] = useState({
@@ -15,10 +19,23 @@ const DecisionMatrixApp = () => {
     },
     reflection: "",
   });
-  const [newItem, setNewItem] = useState("");
   const [activeQuadrant, setActiveQuadrant] = useState("plusPlus");
   const [currentStep, setCurrentStep] = useState(0);
-  const [savedMatrices, setSavedMatrices] = useState([]);
+  
+  type Matrix = {
+    title: string;
+    description: string;
+    date: string;
+    quadrants: {
+      plusPlus: { title: string; items: { id: number; text: string }[] };
+      plusMinus: { title: string; items: { id: number; text: string }[] };
+      minusPlus: { title: string; items: { id: number; text: string }[] };
+      minusMinus: { title: string; items: { id: number; text: string }[] };
+    };
+    reflection: string;
+  };
+  
+  const [savedMatrices, setSavedMatrices] = useState<Matrix[]>([]);
   const [viewMode, setViewMode] = useState("edit"); // 'edit' または 'view'
   const [showReflection, setShowReflection] = useState(true); // 「全体の振り返り」の表示/非表示状態
 
@@ -45,12 +62,12 @@ const DecisionMatrixApp = () => {
 
   // 象限のマッピング
   const stepToQuadrant = useMemo(() => ({
-    1: null, // タイトル入力ステップ
-    2: "plusPlus",
-    3: "plusMinus",
-    4: "minusPlus",
-    5: "minusMinus",
-    6: null, // 振り返りステップ
+    0: null, // タイトル入力ステップ
+    1: "plusPlus",
+    2: "plusMinus",
+    3: "minusPlus",
+    4: "minusMinus",
+    5: null, // 振り返りステップ
   }), []);
 
   // ローカルストレージから保存されたマトリックスを読み込む
@@ -79,23 +96,23 @@ const DecisionMatrixApp = () => {
   }, [currentStep, stepToQuadrant]);
 
   // 新しいアイテムを現在の象限に追加する
-  const addItemToQuadrant = () => {
-    if (newItem.trim() === "") return;
+  const addItemToQuadrant = (text) => {
+    const quadrantForCurrentStep = stepToQuadrant[currentStep];
+    if (!quadrantForCurrentStep) return;
 
     setCurrentMatrix((prev) => {
       const updatedQuadrants = { ...prev.quadrants };
-      updatedQuadrants[activeQuadrant] = {
-        ...updatedQuadrants[activeQuadrant],
+      updatedQuadrants[quadrantForCurrentStep] = {
+        ...updatedQuadrants[quadrantForCurrentStep],
         items: [
-          ...updatedQuadrants[activeQuadrant].items,
-          { id: nextItemId, text: newItem.trim() },
+          ...updatedQuadrants[quadrantForCurrentStep].items,
+          { id: nextItemId, text },
         ],
       };
       return { ...prev, quadrants: updatedQuadrants };
     });
 
     setNextItemId((prevId) => prevId + 1);
-    setNewItem("");
   };
 
   // アイテムを削除する
@@ -154,7 +171,12 @@ const DecisionMatrixApp = () => {
           items,
         };
         return acc;
-      }, {}),
+      }, {
+        plusPlus: { title: "++", items: [] },
+        plusMinus: { title: "+-", items: [] },
+        minusPlus: { title: "-+", items: [] },
+        minusMinus: { title: "--", items: [] },
+      }),
     };
 
     // 次に使用するIDを更新
@@ -163,7 +185,7 @@ const DecisionMatrixApp = () => {
       .reduce((max, item) => Math.max(max, item.id), nextItemId);
 
     setNextItemId(maxId + 1);
-    setCurrentMatrix(updatedMatrix);
+    setCurrentMatrix(updatedMatrix as typeof currentMatrix);
     setCurrentStep(6);
     setViewMode("view");
   };
@@ -189,12 +211,7 @@ const DecisionMatrixApp = () => {
     }
   };
 
-  // エンターキーでアイテムを追加
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      addItemToQuadrant();
-    }
-  };
+  // エンターキーでアイテムを追加の関数は不要になりました
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -322,49 +339,29 @@ const DecisionMatrixApp = () => {
             <Card>
               <CardHeader>
                 <CardTitle>
-                  {quadrantDescriptions[activeQuadrant]} (
-                  {currentMatrix.quadrants[activeQuadrant].title})
+                  {stepToQuadrant[currentStep] ? (
+                    <>
+                      {quadrantDescriptions[stepToQuadrant[currentStep]]} (
+                      {currentMatrix.quadrants[stepToQuadrant[currentStep]].title})
+                    </>
+                  ) : (
+                    "入力フォーム"
+                  )}
                 </CardTitle>
+                <CardDescription>
+                  デバッグ: currentStep = {currentStep}, quadrant = {stepToQuadrant[currentStep]}
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex mb-4">
-                  <input
-                    type="text"
-                    value={newItem}
-                    onChange={(e) => setNewItem(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="新しい項目を入力..."
-                    className="flex-grow p-2 border rounded-l"
+                {stepToQuadrant[currentStep] && (
+                  <QuadrantInput
+                    title={quadrantDescriptions[stepToQuadrant[currentStep]]}
+                    items={currentMatrix.quadrants[stepToQuadrant[currentStep]].items}
+                    onAddItem={addItemToQuadrant}
+                    onRemoveItem={(itemId) => removeItem(stepToQuadrant[currentStep], itemId)}
+                    quadrantTitle={currentMatrix.quadrants[stepToQuadrant[currentStep]].title}
                   />
-                  <Button
-                    onClick={addItemToQuadrant}
-                    className="rounded-l-none"
-                  >
-                    追加
-                  </Button>
-                </div>
-
-                <ul className="bg-gray-50 p-2 rounded">
-                  {currentMatrix.quadrants[activeQuadrant].items.map((item) => (
-                    <li
-                      key={item.id}
-                      className="flex justify-between items-center p-2 border-b"
-                    >
-                      <span>{item.text}</span>
-                      <Button
-                        onClick={() => removeItem(activeQuadrant, item.id)}
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-500 h-auto p-1"
-                      >
-                        ×
-                      </Button>
-                    </li>
-                  ))}
-                  {currentMatrix.quadrants[activeQuadrant].items.length === 0 && (
-                    <li className="p-2 text-gray-500">まだ項目がありません</li>
-                  )}
-                </ul>
+                )}
               </CardContent>
             </Card>
 
