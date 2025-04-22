@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../components/ui/button";
+import { Button } from "../components/atoms/Button";
 import {
   Card,
   CardHeader,
@@ -7,7 +7,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent
-} from "../components/ui/card";
+} from "../components/atoms/Card";
 
 /**
  * shadcn/uiコンポーネントのテストページ

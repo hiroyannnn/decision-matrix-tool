@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import ReflectionVisibilityToggle from "./ReflectionVisibilityToggle";
+import { Button } from "./atoms/Button";
+import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from "./atoms/Card";
 
 const DecisionMatrixApp = () => {
   const [currentMatrix, setCurrentMatrix] = useState({
@@ -208,31 +210,30 @@ const DecisionMatrixApp = () => {
             <h2 className="text-xl font-semibold mb-2">保存したマトリックス</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {savedMatrices.map((matrix, index) => (
-                <div
-                  key={`matrix-${matrix.date}-${index}`}
-                  className="bg-white p-4 rounded shadow"
-                >
-                  <h3 className="font-bold">{matrix.title}</h3>
-                  <p className="text-sm text-gray-500">
-                    {new Date(matrix.date).toLocaleDateString()}
-                  </p>
-                  <div className="mt-2 flex space-x-2">
-                    <button
-                      type="button"
+                <Card key={`matrix-${matrix.date}-${index}`}>
+                  <CardHeader>
+                    <CardTitle>{matrix.title}</CardTitle>
+                    <CardDescription>
+                      {new Date(matrix.date).toLocaleDateString()}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter className="flex justify-end space-x-2">
+                    <Button
                       onClick={() => loadMatrix(index)}
-                      className="bg-blue-500 text-white px-2 py-1 rounded text-sm"
+                      variant="default"
+                      size="sm"
                     >
                       表示
-                    </button>
-                    <button
-                      type="button"
+                    </Button>
+                    <Button
                       onClick={() => deleteMatrix(index)}
-                      className="bg-red-500 text-white px-2 py-1 rounded text-sm"
+                      variant="destructive"
+                      size="sm"
                     >
                       削除
-                    </button>
-                  </div>
-                </div>
+                    </Button>
+                  </CardFooter>
+                </Card>
               ))}
             </div>
           </div>
@@ -240,123 +241,132 @@ const DecisionMatrixApp = () => {
 
         {/* ステップガイド */}
         <div className="mb-6">
-          <div className="bg-white p-4 rounded shadow">
-            <h2 className="text-xl font-semibold mb-2">現在のステップ</h2>
-            <p>{steps[currentStep]}</p>
+          <Card>
+            <CardHeader>
+              <CardTitle>現在のステップ</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{steps[currentStep]}</p>
 
-            {/* 「全体の振り返り」表示切り替えチェックボックス（最初のページ以外で表示） */}
-            {currentStep > 0 && (
-              <div className="mt-4 mb-2">
-                <ReflectionVisibilityToggle
-                  showReflection={showReflection}
-                  setShowReflection={setShowReflection}
-                />
-              </div>
-            )}
-
-            {/* ステップナビゲーション */}
-            <div className="flex justify-between mt-4">
-              <button
+              {/* 「全体の振り返り」表示切り替えチェックボックス（最初のページ以外で表示） */}
+              {currentStep > 0 && (
+                <div className="mt-4 mb-2">
+                  <ReflectionVisibilityToggle
+                    showReflection={showReflection}
+                    setShowReflection={setShowReflection}
+                  />
+                </div>
+              )}
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button
                 type="button"
                 onClick={prevStep}
                 disabled={currentStep === 0}
-                className={`px-4 py-2 rounded ${currentStep === 0 ? "bg-gray-300" : "bg-blue-500 text-white"}`}
+                variant={currentStep === 0 ? "ghost" : "default"}
+                className={currentStep === 0 ? "text-gray-300" : ""}
               >
                 戻る
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={nextStep}
                 disabled={currentStep === steps.length - 1}
-                className={`px-4 py-2 rounded ${currentStep === steps.length - 1 ? "bg-gray-300" : "bg-blue-500 text-white"}`}
+                variant={currentStep === steps.length - 1 ? "ghost" : "default"}
+                className={currentStep === steps.length - 1 ? "text-gray-300" : ""}
               >
                 次へ
-              </button>
-            </div>
-          </div>
+              </Button>
+            </CardFooter>
+          </Card>
         </div>
 
         {/* マトリックスのタイトル入力 (ステップ1) */}
         {currentStep === 0 && (
-          <div className="bg-white p-4 rounded shadow mb-6">
-            <h2 className="text-xl font-semibold mb-2">
-              マトリックスのタイトル
-            </h2>
-            <input
-              type="text"
-              value={currentMatrix.title}
-              onChange={(e) =>
-                setCurrentMatrix((prev) => ({ ...prev, title: e.target.value }))
-              }
-              placeholder="例: 転職の選択、引っ越しの判断、など"
-              className="w-full p-2 border rounded mb-4"
-            />
-            <h2 className="text-xl font-semibold mb-2">
-              詳細情報 (オプション)
-            </h2>
-            <textarea
-              value={currentMatrix.description}
-              onChange={(e) =>
-                setCurrentMatrix((prev) => ({
-                  ...prev,
-                  description: e.target.value,
-                }))
-              }
-              placeholder="選択肢についての詳細や背景など"
-              className="w-full p-2 border rounded h-24"
-            />
-          </div>
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>マトリックスのタイトル</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <input
+                type="text"
+                value={currentMatrix.title}
+                onChange={(e) =>
+                  setCurrentMatrix((prev) => ({ ...prev, title: e.target.value }))
+                }
+                placeholder="例: 転職の選択、引っ越しの判断、など"
+                className="w-full p-2 border rounded mb-4"
+              />
+              <CardTitle className="text-xl font-semibold mb-2">
+                詳細情報 (オプション)
+              </CardTitle>
+              <textarea
+                value={currentMatrix.description}
+                onChange={(e) =>
+                  setCurrentMatrix((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
+                placeholder="選択肢についての詳細や背景など"
+                className="w-full p-2 border rounded h-24"
+              />
+            </CardContent>
+          </Card>
         )}
 
         {/* ステップ2-5のレイアウト（入力と振り返りを横並びに） */}
         {currentStep >= 1 && currentStep <= 4 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* 象限入力 (ステップ2-5) */}
-            <div className="bg-white p-4 rounded shadow">
-              <h2 className="text-xl font-semibold mb-2">
-                {quadrantDescriptions[activeQuadrant]} (
-                {currentMatrix.quadrants[activeQuadrant].title})
-              </h2>
-
-              <div className="flex mb-4">
-                <input
-                  type="text"
-                  value={newItem}
-                  onChange={(e) => setNewItem(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="新しい項目を入力..."
-                  className="flex-grow p-2 border rounded-l"
-                />
-                <button
-                  type="button"
-                  onClick={addItemToQuadrant}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-r"
-                >
-                  追加
-                </button>
-              </div>
-
-              <ul className="bg-gray-50 p-2 rounded">
-                {currentMatrix.quadrants[activeQuadrant].items.map((item) => (
-                  <li
-                    key={item.id}
-                    className="flex justify-between items-center p-2 border-b"
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  {quadrantDescriptions[activeQuadrant]} (
+                  {currentMatrix.quadrants[activeQuadrant].title})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex mb-4">
+                  <input
+                    type="text"
+                    value={newItem}
+                    onChange={(e) => setNewItem(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="新しい項目を入力..."
+                    className="flex-grow p-2 border rounded-l"
+                  />
+                  <Button
+                    onClick={addItemToQuadrant}
+                    className="rounded-l-none"
                   >
-                    <span>{item.text}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeItem(activeQuadrant, item.id)}
-                      className="text-red-500"
+                    追加
+                  </Button>
+                </div>
+
+                <ul className="bg-gray-50 p-2 rounded">
+                  {currentMatrix.quadrants[activeQuadrant].items.map((item) => (
+                    <li
+                      key={item.id}
+                      className="flex justify-between items-center p-2 border-b"
                     >
-                      ×
-                    </button>
-                  </li>
-                ))}
-                {currentMatrix.quadrants[activeQuadrant].items.length === 0 && (
-                  <li className="p-2 text-gray-500">まだ項目がありません</li>
-                )}
-              </ul>
-            </div>
+                      <span>{item.text}</span>
+                      <Button
+                        onClick={() => removeItem(activeQuadrant, item.id)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-500 h-auto p-1"
+                      >
+                        ×
+                      </Button>
+                    </li>
+                  ))}
+                  {currentMatrix.quadrants[activeQuadrant].items.length === 0 && (
+                    <li className="p-2 text-gray-500">まだ項目がありません</li>
+                  )}
+                </ul>
+              </CardContent>
+            </Card>
 
             {/* 全体の振り返り表示 (ステップ2-5) */}
             {showReflection && currentMatrix.title && (
@@ -417,169 +427,173 @@ const DecisionMatrixApp = () => {
 
         {/* 振り返り (ステップ6) */}
         {currentStep === 5 && (
-          <div className="bg-white p-4 rounded shadow mb-6">
-            <h2 className="text-xl font-semibold mb-4">
-              {currentMatrix.title} - 全体の振り返り
-            </h2>
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>{currentMatrix.title} - 全体の振り返り</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {/* マトリックス表示 */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-green-50 p-4 rounded">
+                  <h3 className="font-bold mb-2">++ 選択したら得られること</h3>
+                  <ul className="list-disc pl-5">
+                    {currentMatrix.quadrants.plusPlus.items.map((item) => (
+                      <li key={item.id}>{item.text}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-yellow-50 p-4 rounded">
+                  <h3 className="font-bold mb-2">+- 選択したら失うこと</h3>
+                  <ul className="list-disc pl-5">
+                    {currentMatrix.quadrants.plusMinus.items.map((item) => (
+                      <li key={item.id}>{item.text}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-blue-50 p-4 rounded">
+                  <h3 className="font-bold mb-2">
+                    -+ 選択しなかったら得られること
+                  </h3>
+                  <ul className="list-disc pl-5">
+                    {currentMatrix.quadrants.minusPlus.items.map((item) => (
+                      <li key={item.id}>{item.text}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-red-50 p-4 rounded">
+                  <h3 className="font-bold mb-2">-- 選択しなかったら失うこと</h3>
+                  <ul className="list-disc pl-5">
+                    {currentMatrix.quadrants.minusMinus.items.map((item) => (
+                      <li key={item.id}>{item.text}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
 
-            {/* マトリックス表示 */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-green-50 p-4 rounded">
-                <h3 className="font-bold mb-2">++ 選択したら得られること</h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.plusPlus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-yellow-50 p-4 rounded">
-                <h3 className="font-bold mb-2">+- 選択したら失うこと</h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.plusMinus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-blue-50 p-4 rounded">
-                <h3 className="font-bold mb-2">
-                  -+ 選択しなかったら得られること
-                </h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.minusPlus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-red-50 p-4 rounded">
-                <h3 className="font-bold mb-2">-- 選択しなかったら失うこと</h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.minusMinus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {showReflection && (
-              <div className="mb-4">
-                <h3 className="font-bold mb-2">振り返りと決断</h3>
-                <p className="mb-4 text-gray-700">
-                  選択肢のメリット・デメリットを全体的に眺めて、あなたの決断を記録しましょう。
-                  特に「選択した場合に失うこと」に対する対処法も考えてみてください。
-                </p>
-                <textarea
-                  value={currentMatrix.reflection}
-                  onChange={(e) =>
-                    setCurrentMatrix((prev) => ({
-                      ...prev,
-                      reflection: e.target.value,
-                    }))
-                  }
-                  placeholder="全体を見た感想や、最終的な決断、「選択したら失うこと」への対処法などを記入してください..."
-                  className="w-full p-2 border rounded h-32"
-                />
-              </div>
-            )}
-
-            <button
-              type="button"
-              onClick={saveMatrix}
-              className="w-full bg-green-500 text-white px-4 py-2 rounded"
-            >
-              このマトリックスを保存する
-            </button>
-          </div>
+              {showReflection && (
+                <div className="mb-4">
+                  <h3 className="font-bold mb-2">振り返りと決断</h3>
+                  <p className="mb-4 text-gray-700">
+                    選択肢のメリット・デメリットを全体的に眺めて、あなたの決断を記録しましょう。
+                    特に「選択した場合に失うこと」に対する対処法も考えてみてください。
+                  </p>
+                  <textarea
+                    value={currentMatrix.reflection}
+                    onChange={(e) =>
+                      setCurrentMatrix((prev) => ({
+                        ...prev,
+                        reflection: e.target.value,
+                      }))
+                    }
+                    placeholder="全体を見た感想や、最終的な決断、「選択したら失うこと」への対処法などを記入してください..."
+                    className="w-full p-2 border rounded h-32"
+                  />
+                </div>
+              )}
+            </CardContent>
+            <CardFooter>
+              <Button
+                onClick={saveMatrix}
+                className="w-full"
+                variant="default"
+              >
+                このマトリックスを保存する
+              </Button>
+            </CardFooter>
+          </Card>
         )}
 
         {/* 表示モード */}
         {viewMode === "view" && currentStep === 6 && (
-          <div className="bg-white p-4 rounded shadow mb-6">
-            <h2 className="text-xl font-semibold mb-4">
-              {currentMatrix.title}
-            </h2>
-
-            {currentMatrix.description && (
-              <div className="mb-4 p-2 bg-gray-50 rounded">
-                <p>{currentMatrix.description}</p>
-              </div>
-            )}
-
-            {/* マトリックス表示 */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-green-50 p-4 rounded">
-                <h3 className="font-bold mb-2">++ 選択したら得られること</h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.plusPlus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-yellow-50 p-4 rounded">
-                <h3 className="font-bold mb-2">+- 選択したら失うこと</h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.plusMinus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-blue-50 p-4 rounded">
-                <h3 className="font-bold mb-2">
-                  -+ 選択しなかったら得られること
-                </h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.minusPlus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="bg-red-50 p-4 rounded">
-                <h3 className="font-bold mb-2">-- 選択しなかったら失うこと</h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.minusMinus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {currentMatrix.reflection && showReflection && (
-              <div className="mb-4">
-                <h3 className="font-bold mb-2">振り返りと決断</h3>
-                <div className="p-3 bg-gray-50 rounded">
-                  <p>{currentMatrix.reflection}</p>
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>{currentMatrix.title}</CardTitle>
+              {currentMatrix.description && (
+                <CardDescription>
+                  <div className="p-2 bg-gray-50 rounded">
+                    <p>{currentMatrix.description}</p>
+                  </div>
+                </CardDescription>
+              )}
+            </CardHeader>
+            <CardContent>
+              {/* マトリックス表示 */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-green-50 p-4 rounded">
+                  <h3 className="font-bold mb-2">++ 選択したら得られること</h3>
+                  <ul className="list-disc pl-5">
+                    {currentMatrix.quadrants.plusPlus.items.map((item) => (
+                      <li key={item.id}>{item.text}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-yellow-50 p-4 rounded">
+                  <h3 className="font-bold mb-2">+- 選択したら失うこと</h3>
+                  <ul className="list-disc pl-5">
+                    {currentMatrix.quadrants.plusMinus.items.map((item) => (
+                      <li key={item.id}>{item.text}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-blue-50 p-4 rounded">
+                  <h3 className="font-bold mb-2">
+                    -+ 選択しなかったら得られること
+                  </h3>
+                  <ul className="list-disc pl-5">
+                    {currentMatrix.quadrants.minusPlus.items.map((item) => (
+                      <li key={item.id}>{item.text}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-red-50 p-4 rounded">
+                  <h3 className="font-bold mb-2">-- 選択しなかったら失うこと</h3>
+                  <ul className="list-disc pl-5">
+                    {currentMatrix.quadrants.minusMinus.items.map((item) => (
+                      <li key={item.id}>{item.text}</li>
+                    ))}
+                  </ul>
                 </div>
               </div>
-            )}
 
-            <button
-              type="button"
-              onClick={() => setViewMode("edit")}
-              className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
-            >
-              編集モードに切り替え
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setCurrentMatrix({
-                  title: "",
-                  description: "",
-                  quadrants: {
-                    plusPlus: { title: "++", items: [] },
-                    plusMinus: { title: "+-", items: [] },
-                    minusPlus: { title: "-+", items: [] },
-                    minusMinus: { title: "--", items: [] },
-                  },
-                  reflection: "",
-                });
-                setCurrentStep(0);
-                setViewMode("edit");
-              }}
-              className="bg-green-500 text-white px-4 py-2 rounded"
-            >
-              新しいマトリックスを作成
-            </button>
-          </div>
+              {currentMatrix.reflection && showReflection && (
+                <div className="mb-4">
+                  <h3 className="font-bold mb-2">振り返りと決断</h3>
+                  <div className="p-3 bg-gray-50 rounded">
+                    <p>{currentMatrix.reflection}</p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+            <CardFooter className="flex space-x-2">
+              <Button
+                onClick={() => setViewMode("edit")}
+                variant="default"
+                className="mr-2"
+              >
+                編集モードに切り替え
+              </Button>
+              <Button
+                onClick={() => {
+                  setCurrentMatrix({
+                    title: "",
+                    description: "",
+                    quadrants: {
+                      plusPlus: { title: "++", items: [] },
+                      plusMinus: { title: "+-", items: [] },
+                      minusPlus: { title: "-+", items: [] },
+                      minusMinus: { title: "--", items: [] },
+                    },
+                    reflection: "",
+                  });
+                  setCurrentStep(0);
+                  setViewMode("edit");
+                }}
+                variant="default"
+              >
+                新しいマトリックスを作成
+              </Button>
+            </CardFooter>
+          </Card>
         )}
       </main>
 
