@@ -3,6 +3,19 @@
   "organizeImports": {
     "enabled": true
   },
+  "files": {
+    "ignore": [
+      ".next/**",
+      "node_modules/**",
+      "package.json",
+      "out/**",
+      "dist/**",
+      "build/**",
+      ".cache/**",
+      ".vscode/**",
+      ".DS_Store"
+    ]
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -15,18 +28,29 @@
       },
       "performance": {
         "noDelete": "warn"
+      },
+      "a11y": {
+        "recommended": true
       }
     },
-    "ignore": ["package.json"],
-    "include": ["src/**/*.{ts,tsx,js,jsx}", "tests/**/*.{ts,tsx,js,jsx}"]
+    "ignore": ["package.json", ".next/**", "node_modules/**"],
+    "include": [
+      "src/**/*.{ts,tsx,js,jsx}",
+      "tests/**/*.{ts,tsx,js,jsx}",
+      "pages/**/*.{ts,tsx,js,jsx}"
+    ]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 80,
-    "ignore": ["package.json"],
-    "include": ["src/**/*.{ts,tsx,js,jsx}", "tests/**/*.{ts,tsx,js,jsx}"]
+    "ignore": ["package.json", ".next/**", "node_modules/**"],
+    "include": [
+      "src/**/*.{ts,tsx,js,jsx}",
+      "tests/**/*.{ts,tsx,js,jsx}",
+      "pages/**/*.{ts,tsx,js,jsx}"
+    ]
   },
   "javascript": {
     "formatter": {
