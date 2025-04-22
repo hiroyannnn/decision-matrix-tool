@@ -16,11 +16,12 @@ export default defineConfig({
   test: {
     environment: "happy-dom",
     globals: true,
-    setupFiles: ["./tests/setup.js"],
+    setupFiles: ["./tests/setup.tsx"],
     // Next.jsのページとコンポーネントを対象に含める
     include: [
       "./pages/**/*.{test,spec}.{js,jsx,ts,tsx}",
       "./src/**/*.{test,spec}.{js,jsx,ts,tsx}",
+      "./tests/**/*.{test,spec}.{js,jsx,ts,tsx}"
     ],
     coverage: {
       provider: "istanbul",
