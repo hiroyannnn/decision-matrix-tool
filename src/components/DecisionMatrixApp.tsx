@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import ReflectionVisibilityToggle from "./ReflectionVisibilityToggle";
 import { Button } from "./atoms/Button";
-import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from "./atoms/Card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./atoms/Card";
 
 const DecisionMatrixApp = () => {
   const [currentMatrix, setCurrentMatrix] = useState({
