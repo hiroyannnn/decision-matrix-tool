@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   // ビルド出力ディレクトリ
   distDir: '.next',
   poweredByHeader: false,
