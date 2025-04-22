@@ -10,6 +10,13 @@ const nextConfig = {
   // env: {
   //   NEXT_PUBLIC_APP_NAME: 'Decision Matrix Tool',
   // },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': __dirname,
+    };
+    return config;
+  },
 };
 
 module.exports = nextConfig;
