@@ -308,107 +308,110 @@ const DecisionMatrixApp = () => {
           </div>
         )}
 
-        {/* 全体の振り返り表示 (ステップ2-5) */}
-        {currentStep >= 1 && currentStep <= 4 && showReflection && currentMatrix.title && (
-          <div className="bg-white p-4 rounded shadow mb-6">
-            <h2 className="text-xl font-semibold mb-2">
-              {currentMatrix.title} - 全体の振り返り
-            </h2>
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-green-50 p-4 rounded">
-                <h3 className="font-bold mb-2">++ 選択したら得られること</h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.plusPlus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                  {currentMatrix.quadrants.plusPlus.items.length === 0 && (
-                    <li className="text-gray-500">まだ項目がありません</li>
-                  )}
-                </ul>
-              </div>
-              <div className="bg-yellow-50 p-4 rounded">
-                <h3 className="font-bold mb-2">+- 選択したら失うこと</h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.plusMinus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                  {currentMatrix.quadrants.plusMinus.items.length === 0 && (
-                    <li className="text-gray-500">まだ項目がありません</li>
-                  )}
-                </ul>
-              </div>
-              <div className="bg-blue-50 p-4 rounded">
-                <h3 className="font-bold mb-2">-+ 選択しなかったら得られること</h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.minusPlus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                  {currentMatrix.quadrants.minusPlus.items.length === 0 && (
-                    <li className="text-gray-500">まだ項目がありません</li>
-                  )}
-                </ul>
-              </div>
-              <div className="bg-red-50 p-4 rounded">
-                <h3 className="font-bold mb-2">-- 選択しなかったら失うこと</h3>
-                <ul className="list-disc pl-5">
-                  {currentMatrix.quadrants.minusMinus.items.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                  ))}
-                  {currentMatrix.quadrants.minusMinus.items.length === 0 && (
-                    <li className="text-gray-500">まだ項目がありません</li>
-                  )}
-                </ul>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* 象限入力 (ステップ2-5) */}
+        {/* ステップ2-5のレイアウト（入力と振り返りを横並びに） */}
         {currentStep >= 1 && currentStep <= 4 && (
-          <div className="bg-white p-4 rounded shadow mb-6">
-            <h2 className="text-xl font-semibold mb-2">
-              {quadrantDescriptions[activeQuadrant]} (
-              {currentMatrix.quadrants[activeQuadrant].title})
-            </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 象限入力 (ステップ2-5) */}
+            <div className="bg-white p-4 rounded shadow">
+              <h2 className="text-xl font-semibold mb-2">
+                {quadrantDescriptions[activeQuadrant]} (
+                {currentMatrix.quadrants[activeQuadrant].title})
+              </h2>
 
-            <div className="flex mb-4">
-              <input
-                type="text"
-                value={newItem}
-                onChange={(e) => setNewItem(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="新しい項目を入力..."
-                className="flex-grow p-2 border rounded-l"
-              />
-              <button
-                type="button"
-                onClick={addItemToQuadrant}
-                className="bg-blue-500 text-white px-4 py-2 rounded-r"
-              >
-                追加
-              </button>
+              <div className="flex mb-4">
+                <input
+                  type="text"
+                  value={newItem}
+                  onChange={(e) => setNewItem(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="新しい項目を入力..."
+                  className="flex-grow p-2 border rounded-l"
+                />
+                <button
+                  type="button"
+                  onClick={addItemToQuadrant}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-r"
+                >
+                  追加
+                </button>
+              </div>
+
+              <ul className="bg-gray-50 p-2 rounded">
+                {currentMatrix.quadrants[activeQuadrant].items.map((item) => (
+                  <li
+                    key={item.id}
+                    className="flex justify-between items-center p-2 border-b"
+                  >
+                    <span>{item.text}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeItem(activeQuadrant, item.id)}
+                      className="text-red-500"
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+                {currentMatrix.quadrants[activeQuadrant].items.length === 0 && (
+                  <li className="p-2 text-gray-500">まだ項目がありません</li>
+                )}
+              </ul>
             </div>
 
-            <ul className="bg-gray-50 p-2 rounded">
-              {currentMatrix.quadrants[activeQuadrant].items.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex justify-between items-center p-2 border-b"
-                >
-                  <span>{item.text}</span>
-                  <button
-                    type="button"
-                    onClick={() => removeItem(activeQuadrant, item.id)}
-                    className="text-red-500"
-                  >
-                    ×
-                  </button>
-                </li>
-              ))}
-              {currentMatrix.quadrants[activeQuadrant].items.length === 0 && (
-                <li className="p-2 text-gray-500">まだ項目がありません</li>
-              )}
-            </ul>
+            {/* 全体の振り返り表示 (ステップ2-5) */}
+            {showReflection && currentMatrix.title && (
+              <div className="bg-white p-4 rounded shadow">
+                <h2 className="text-xl font-semibold mb-2">
+                  {currentMatrix.title} - 全体の振り返り
+                </h2>
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-green-50 p-4 rounded">
+                    <h3 className="font-bold mb-2">++ 選択したら得られること</h3>
+                    <ul className="list-disc pl-5">
+                      {currentMatrix.quadrants.plusPlus.items.map((item) => (
+                        <li key={item.id}>{item.text}</li>
+                      ))}
+                      {currentMatrix.quadrants.plusPlus.items.length === 0 && (
+                        <li className="text-gray-500">まだ項目がありません</li>
+                      )}
+                    </ul>
+                  </div>
+                  <div className="bg-yellow-50 p-4 rounded">
+                    <h3 className="font-bold mb-2">+- 選択したら失うこと</h3>
+                    <ul className="list-disc pl-5">
+                      {currentMatrix.quadrants.plusMinus.items.map((item) => (
+                        <li key={item.id}>{item.text}</li>
+                      ))}
+                      {currentMatrix.quadrants.plusMinus.items.length === 0 && (
+                        <li className="text-gray-500">まだ項目がありません</li>
+                      )}
+                    </ul>
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded">
+                    <h3 className="font-bold mb-2">-+ 選択しなかったら得られること</h3>
+                    <ul className="list-disc pl-5">
+                      {currentMatrix.quadrants.minusPlus.items.map((item) => (
+                        <li key={item.id}>{item.text}</li>
+                      ))}
+                      {currentMatrix.quadrants.minusPlus.items.length === 0 && (
+                        <li className="text-gray-500">まだ項目がありません</li>
+                      )}
+                    </ul>
+                  </div>
+                  <div className="bg-red-50 p-4 rounded">
+                    <h3 className="font-bold mb-2">-- 選択しなかったら失うこと</h3>
+                    <ul className="list-disc pl-5">
+                      {currentMatrix.quadrants.minusMinus.items.map((item) => (
+                        <li key={item.id}>{item.text}</li>
+                      ))}
+                      {currentMatrix.quadrants.minusMinus.items.length === 0 && (
+                        <li className="text-gray-500">まだ項目がありません</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
