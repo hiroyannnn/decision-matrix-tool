@@ -1,11 +1,11 @@
 import React from "react";
 import {
   Card as ShadcnCard,
-  CardHeader as ShadcnCardHeader,
-  CardFooter as ShadcnCardFooter,
-  CardTitle as ShadcnCardTitle,
+  CardContent as ShadcnCardContent,
   CardDescription as ShadcnCardDescription,
-  CardContent as ShadcnCardContent
+  CardFooter as ShadcnCardFooter,
+  CardHeader as ShadcnCardHeader,
+  CardTitle as ShadcnCardTitle
 } from "../ui/card";
 
 /**

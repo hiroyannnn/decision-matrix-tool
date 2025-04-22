@@ -2,11 +2,11 @@ import React from "react";
 import { Button } from "../components/atoms/Button";
 import {
   Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
+  CardContent,
   CardDescription,
-  CardContent
+  CardFooter,
+  CardHeader,
+  CardTitle
 } from "../components/atoms/Card";
 
 /**
