@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import type React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { QUADRANT_DESCRIPTIONS, STEPS } from "../constants/matrix";
 import { useMatrix } from "../hooks/useMatrix";
-import type { QuadrantType } from "../types/matrix";
+import type { Matrix, QuadrantType } from "../types/matrix";
 import { Button } from "./atoms/Button";
 import {
   Card,
@@ -29,7 +29,13 @@ export const DecisionMatrixApp: React.FC<DecisionMatrixAppProps> = ({
   currentStep: initialStep,
 }) => {
   const router = useRouter();
-  const [showReflection, setShowReflection] = useState(true);
+  const [showReflection, setShowReflection] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("showReflection");
+      return saved ? saved === "true" : true;
+    }
+    return true;
+  });
 
   const {
     currentMatrix,
@@ -39,7 +45,7 @@ export const DecisionMatrixApp: React.FC<DecisionMatrixAppProps> = ({
     loadMatrix,
     addItemToQuadrant,
     removeItem,
-    setShouldSave,
+    saveMatrix,
   } = useMatrix();
 
   // 象限のマッピング
@@ -55,24 +61,72 @@ export const DecisionMatrixApp: React.FC<DecisionMatrixAppProps> = ({
     []
   );
 
-  useEffect(() => {
-    localStorage.setItem("showReflection", showReflection.toString());
-  }, [showReflection]);
+  const handleToggleReflection = (show: boolean) => {
+    setShowReflection(show);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("showReflection", show.toString());
+    }
+  };
 
   // 次のステップに進む
-  const nextStep = () => {
+  const nextStep = useCallback(() => {
     if (initialStep === 0 && currentMatrix.title.trim() === "") {
       return;
     }
 
-    if (initialStep === 0) {
-      setShouldSave(true);
-    }
+    console.log("nextStep:", {
+      initialStep,
+      title: currentMatrix.title,
+      reflection: currentMatrix.reflection,
+    });
 
-    if (initialStep < STEPS.length - 1) {
-      router.push(`/?step=${initialStep + 1}`, undefined, { shallow: true });
+    // すべてのステップで保存を実行
+    console.log(
+      "保存を実行: initialStep =",
+      initialStep,
+      "title =",
+      currentMatrix.title
+    );
+
+    // 保存を実行して完了を確認
+    const checkSaveComplete = () => {
+      try {
+        const savedData = localStorage.getItem("decisionMatrices");
+        console.log("保存確認:", savedData);
+
+        if (savedData) {
+          const matrices = JSON.parse(savedData);
+          const isSaved = matrices.some(
+            (m: Matrix) => m.title === currentMatrix.title
+          );
+          console.log("保存状態:", { isSaved, title: currentMatrix.title });
+
+          if (isSaved) {
+            console.log("保存完了、ページ遷移を実行");
+            if (initialStep < STEPS.length - 1) {
+              router.push(`/?step=${initialStep + 1}`, undefined, {
+                shallow: true,
+              });
+            }
+          } else {
+            console.log("保存未完了、再試行");
+            setTimeout(checkSaveComplete, 50);
+          }
+        } else {
+          console.log("保存データなし、再試行");
+          setTimeout(checkSaveComplete, 50);
+        }
+      } catch (error) {
+        console.error("保存確認エラー:", error);
+        setTimeout(checkSaveComplete, 50);
+      }
+    };
+
+    // 保存を実行してから確認を開始
+    if (saveMatrix(currentMatrix)) {
+      setTimeout(checkSaveComplete, 100);
     }
-  };
+  }, [initialStep, currentMatrix, router, saveMatrix]);
 
   // 前のステップに戻る
   const prevStep = () => {
@@ -100,7 +154,7 @@ export const DecisionMatrixApp: React.FC<DecisionMatrixAppProps> = ({
             currentStep={initialStep}
             steps={STEPS}
             showReflection={showReflection}
-            onToggleReflection={setShowReflection}
+            onToggleReflection={handleToggleReflection}
           />
         )}
 
@@ -156,18 +210,24 @@ export const DecisionMatrixApp: React.FC<DecisionMatrixAppProps> = ({
 
               <div className="mb-4">
                 <h3 className="font-bold mb-2">振り返りと決断</h3>
-                <p className="mb-4 text-gray-700">
+                <div className="mb-4 text-gray-700">
                   選択肢のメリット・デメリットを全体的に眺めて、あなたの決断を記録しましょう。
                   特に「選択した場合に失うこと」に対する対処法も考えてみてください。
-                </p>
+                </div>
                 <textarea
                   value={currentMatrix.reflection}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const newReflection = e.target.value;
                     setCurrentMatrix((prev) => ({
                       ...prev,
-                      reflection: e.target.value,
-                    }))
-                  }
+                      reflection: newReflection,
+                    }));
+                    // 振り返りを入力したら即座に保存
+                    saveMatrix({
+                      ...currentMatrix,
+                      reflection: newReflection,
+                    });
+                  }}
                   placeholder="全体を見た感想や、最終的な決断、「選択したら失うこと」への対処法などを記入してください..."
                   className="w-full p-2 border rounded h-32"
                 />

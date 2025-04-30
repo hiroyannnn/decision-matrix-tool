@@ -1,8 +1,86 @@
 import type { FC } from "react";
-import { useState } from "react";
+import { memo, useCallback, useState } from "react";
 import type { Matrix, QuadrantType } from "../../types/matrix";
 import { Button } from "../atoms/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../atoms/Card";
+
+type QuadrantHeaderProps = {
+  description: string;
+  title: string;
+};
+
+const QuadrantHeader: FC<QuadrantHeaderProps> = ({ description, title }) => (
+  <CardHeader>
+    <CardTitle>
+      {description} ({title})
+    </CardTitle>
+  </CardHeader>
+);
+
+type ItemInputProps = {
+  value: string;
+  onChange: (value: string) => void;
+  onAdd: () => void;
+};
+
+const ItemInput: FC<ItemInputProps> = ({ value, onChange, onAdd }) => {
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter" && value.trim()) {
+        onAdd();
+      }
+    },
+    [value, onAdd]
+  );
+
+  return (
+    <div className="flex mb-4">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="項目を入力してEnterキーを押すか、追加ボタンをクリックしてください"
+        className="flex-grow p-2 border rounded-l"
+        aria-label="項目の入力"
+      />
+      <Button
+        onClick={onAdd}
+        className="rounded-l-none"
+        disabled={!value.trim()}
+        aria-label="項目を追加"
+      >
+        追加
+      </Button>
+    </div>
+  );
+};
+
+type ItemListProps = {
+  items: { id: number; text: string }[];
+  onRemove: (id: number) => void;
+};
+
+const ItemList: FC<ItemListProps> = ({ items, onRemove }) => (
+  <ul className="space-y-2">
+    {items.map((item) => (
+      <li
+        key={item.id}
+        className="flex justify-between items-center p-2 bg-gray-50 rounded"
+      >
+        <span>{item.text}</span>
+        <Button
+          onClick={() => onRemove(item.id)}
+          variant="ghost"
+          size="sm"
+          aria-label={`${item.text}を削除`}
+        >
+          削除
+        </Button>
+      </li>
+    ))}
+  </ul>
+);
 
 type QuadrantInputProps = {
   matrix: Matrix;
@@ -27,60 +105,27 @@ export const QuadrantInput: FC<QuadrantInputProps> = ({
   const [inputValue, setInputValue] = useState("");
   const quadrant = matrix.quadrants[quadrantType];
 
-  const handleAddItem = () => {
+  const handleAddItem = useCallback(() => {
     if (inputValue.trim()) {
       onAddItem(inputValue.trim());
       setInputValue("");
     }
-  };
+  }, [inputValue, onAddItem]);
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>
-          {quadrantDescription} ({quadrant.title})
-        </CardTitle>
-      </CardHeader>
+      <QuadrantHeader
+        description={quadrantDescription}
+        title={quadrant.title}
+      />
       <CardContent>
         <div>
-          <div className="flex mb-4">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && inputValue.trim()) {
-                  handleAddItem();
-                }
-              }}
-              placeholder="項目を入力してEnterキーを押すか、追加ボタンをクリックしてください"
-              className="flex-grow p-2 border rounded-l"
-            />
-            <Button
-              onClick={handleAddItem}
-              className="rounded-l-none"
-              disabled={!inputValue.trim()}
-            >
-              追加
-            </Button>
-          </div>
-          <ul className="space-y-2">
-            {quadrant.items.map((item) => (
-              <li
-                key={item.id}
-                className="flex justify-between items-center p-2 bg-gray-50 rounded"
-              >
-                <span>{item.text}</span>
-                <Button
-                  onClick={() => onRemoveItem(item.id)}
-                  variant="ghost"
-                  size="sm"
-                >
-                  削除
-                </Button>
-              </li>
-            ))}
-          </ul>
+          <ItemInput
+            value={inputValue}
+            onChange={setInputValue}
+            onAdd={handleAddItem}
+          />
+          <ItemList items={quadrant.items} onRemove={onRemoveItem} />
         </div>
       </CardContent>
     </Card>

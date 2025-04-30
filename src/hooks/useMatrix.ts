@@ -9,7 +9,6 @@ export const useMatrix = () => {
     date: new Date().toISOString(),
   });
   const [nextItemId, setNextItemId] = useState(1);
-  const [shouldSave, setShouldSave] = useState(false);
 
   useEffect(() => {
     const savedData = localStorage.getItem("decisionMatrices");
@@ -18,26 +17,44 @@ export const useMatrix = () => {
     }
   }, []);
 
-  // マトリックスの変更を監視して自動保存
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (currentMatrix.title.trim() !== "" && shouldSave) {
-      const updatedMatrices = [...savedMatrices];
+  const saveMatrix = (matrix: Matrix) => {
+    console.log("保存実行:", {
+      title: matrix.title,
+      reflection: matrix.reflection,
+      date: matrix.date,
+    });
+
+    try {
+      const savedData = localStorage.getItem("decisionMatrices");
+      console.log("現在の保存データ:", savedData);
+
+      const currentSavedMatrices = savedData ? JSON.parse(savedData) : [];
+      console.log("現在のマトリックス一覧:", currentSavedMatrices);
+
+      const updatedMatrices = [...currentSavedMatrices];
       const existingIndex = updatedMatrices.findIndex(
-        (m) => m.title === currentMatrix.title
+        (m) => m.title === matrix.title
       );
 
       if (existingIndex >= 0) {
-        updatedMatrices[existingIndex] = currentMatrix;
+        console.log("既存のマトリックスを更新:", existingIndex);
+        updatedMatrices[existingIndex] = matrix;
       } else {
-        updatedMatrices.push(currentMatrix);
+        console.log("新しいマトリックスを追加");
+        updatedMatrices.push(matrix);
       }
 
-      localStorage.setItem("decisionMatrices", JSON.stringify(updatedMatrices));
+      const matricesJson = JSON.stringify(updatedMatrices);
+      console.log("保存するデータ:", matricesJson);
+
+      localStorage.setItem("decisionMatrices", matricesJson);
       setSavedMatrices(updatedMatrices);
-      setShouldSave(false);
+      return true;
+    } catch (error) {
+      console.error("保存エラー:", error);
+      return false;
     }
-  }, [currentMatrix, shouldSave]);
+  };
 
   const deleteMatrix = (index: number) => {
     const updatedMatrices = savedMatrices.filter((_, i) => i !== index);
@@ -109,6 +126,6 @@ export const useMatrix = () => {
     loadMatrix,
     addItemToQuadrant,
     removeItem,
-    setShouldSave,
+    saveMatrix,
   };
 };

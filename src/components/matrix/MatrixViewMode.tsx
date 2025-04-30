@@ -34,7 +34,7 @@ export const MatrixViewMode: FC<MatrixViewModeProps> = ({
         {matrix.description && (
           <CardDescription>
             <div className="p-2 bg-gray-50 rounded">
-              <p>{matrix.description}</p>
+              <span>{matrix.description}</span>
             </div>
           </CardDescription>
         )}

@@ -58,7 +58,7 @@ export const MatrixView = ({
       <div className="mb-4">
         <h3 className="font-bold mb-2">振り返りと決断</h3>
         <div className="p-3 bg-gray-50 rounded">
-          <p>{matrix.reflection}</p>
+          <span>{matrix.reflection}</span>
         </div>
       </div>
     )}
