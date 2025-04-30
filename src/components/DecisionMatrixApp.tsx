@@ -81,12 +81,14 @@ export const DecisionMatrixApp = () => {
           onDelete={deleteMatrix}
         />
 
-        <StepGuide
-          currentStep={currentStep}
-          steps={STEPS}
-          showReflection={showReflection}
-          onToggleReflection={setShowReflection}
-        />
+        {currentStep !== 6 && (
+          <StepGuide
+            currentStep={currentStep}
+            steps={STEPS}
+            showReflection={showReflection}
+            onToggleReflection={setShowReflection}
+          />
+        )}
 
         <MatrixReflection
           matrix={currentMatrix}
