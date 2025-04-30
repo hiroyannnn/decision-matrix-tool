@@ -5,7 +5,7 @@ import {
   CardDescription as ShadcnCardDescription,
   CardFooter as ShadcnCardFooter,
   CardHeader as ShadcnCardHeader,
-  CardTitle as ShadcnCardTitle
+  CardTitle as ShadcnCardTitle,
 } from "../ui/card";
 
 /**
@@ -86,5 +86,5 @@ export {
   CardFooter,
   CardTitle,
   CardDescription,
-  CardContent
+  CardContent,
 };

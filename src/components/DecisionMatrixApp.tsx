@@ -4,7 +4,14 @@ import { useMatrix } from "../hooks/useMatrix";
 import type { QuadrantType } from "../types/matrix";
 import { ReflectionVisibilityToggle } from "./ReflectionVisibilityToggle";
 import { Button } from "./atoms/Button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./atoms/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./atoms/Card";
 import { MatrixView } from "./matrix/MatrixView";
 import { TitleStep } from "./steps/TitleStep";
 
@@ -25,14 +32,17 @@ export const DecisionMatrixApp = () => {
   } = useMatrix();
 
   // 象限のマッピング
-  const stepToQuadrant = useMemo(() => ({
-    0: null, // タイトル入力ステップ
-    1: "plusPlus" as QuadrantType,
-    2: "plusMinus" as QuadrantType,
-    3: "minusPlus" as QuadrantType,
-    4: "minusMinus" as QuadrantType,
-    5: null, // 振り返りステップ
-  }), []);
+  const stepToQuadrant = useMemo(
+    () => ({
+      0: null, // タイトル入力ステップ
+      1: "plusPlus" as QuadrantType,
+      2: "plusMinus" as QuadrantType,
+      3: "minusPlus" as QuadrantType,
+      4: "minusMinus" as QuadrantType,
+      5: null, // 振り返りステップ
+    }),
+    [],
+  );
 
   useEffect(() => {
     localStorage.setItem("showReflection", showReflection.toString());
@@ -40,7 +50,7 @@ export const DecisionMatrixApp = () => {
 
   // 次のステップに進む
   const nextStep = () => {
-    if (currentStep === 0 && currentMatrix.title.trim() === '') {
+    if (currentStep === 0 && currentMatrix.title.trim() === "") {
       return;
     }
 
@@ -121,7 +131,7 @@ export const DecisionMatrixApp = () => {
         </div>
 
         {/* 全体の振り返り表示 (ステップ2-5) */}
-        {showReflection && currentStep > 0  && currentStep < 5 && (
+        {showReflection && currentStep > 0 && currentStep < 5 && (
           <div className="bg-white p-4 rounded shadow mb-4">
             <h2 className="text-xl font-semibold mb-2">
               {currentMatrix.title}
@@ -141,7 +151,7 @@ export const DecisionMatrixApp = () => {
             onDescriptionChange={(description) =>
               setCurrentMatrix((prev) => ({ ...prev, description }))
             }
-            showError={currentMatrix.title.trim() === ''}
+            showError={currentMatrix.title.trim() === ""}
           />
         )}
 
@@ -155,7 +165,11 @@ export const DecisionMatrixApp = () => {
                   {stepToQuadrant[currentStep] ? (
                     <>
                       {QUADRANT_DESCRIPTIONS[stepToQuadrant[currentStep]!]} (
-                      {currentMatrix.quadrants[stepToQuadrant[currentStep]!].title})
+                      {
+                        currentMatrix.quadrants[stepToQuadrant[currentStep]!]
+                          .title
+                      }
+                      )
                     </>
                   ) : (
                     "入力フォーム"
@@ -171,7 +185,7 @@ export const DecisionMatrixApp = () => {
                         if (e.key === "Enter" && e.currentTarget.value.trim()) {
                           addItemToQuadrant(
                             stepToQuadrant[currentStep]!,
-                            e.currentTarget.value.trim()
+                            e.currentTarget.value.trim(),
                           );
                           e.currentTarget.value = "";
                         }
@@ -180,31 +194,30 @@ export const DecisionMatrixApp = () => {
                       className="w-full p-2 border rounded mb-4"
                     />
                     <ul className="space-y-2">
-                      {currentMatrix.quadrants[stepToQuadrant[currentStep]!].items.map(
-                        (item) => (
-                          <li
-                            key={item.id}
-                            className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                      {currentMatrix.quadrants[
+                        stepToQuadrant[currentStep]!
+                      ].items.map((item) => (
+                        <li
+                          key={item.id}
+                          className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                        >
+                          <span>{item.text}</span>
+                          <Button
+                            onClick={() =>
+                              removeItem(stepToQuadrant[currentStep]!, item.id)
+                            }
+                            variant="ghost"
+                            size="sm"
                           >
-                            <span>{item.text}</span>
-                            <Button
-                              onClick={() =>
-                                removeItem(stepToQuadrant[currentStep]!, item.id)
-                              }
-                              variant="ghost"
-                              size="sm"
-                            >
-                              削除
-                            </Button>
-                          </li>
-                        )
-                      )}
+                            削除
+                          </Button>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 )}
               </CardContent>
             </Card>
-
           </div>
         )}
 
@@ -217,24 +230,24 @@ export const DecisionMatrixApp = () => {
             <CardContent>
               <MatrixView matrix={currentMatrix} showReflection={false} />
 
-                <div className="mb-4">
-                  <h3 className="font-bold mb-2">振り返りと決断</h3>
-                  <p className="mb-4 text-gray-700">
-                    選択肢のメリット・デメリットを全体的に眺めて、あなたの決断を記録しましょう。
-                    特に「選択した場合に失うこと」に対する対処法も考えてみてください。
-                  </p>
-                  <textarea
-                    value={currentMatrix.reflection}
-                    onChange={(e) =>
-                      setCurrentMatrix((prev) => ({
-                        ...prev,
-                        reflection: e.target.value,
-                      }))
-                    }
-                    placeholder="全体を見た感想や、最終的な決断、「選択したら失うこと」への対処法などを記入してください..."
-                    className="w-full p-2 border rounded h-32"
-                  />
-                </div>
+              <div className="mb-4">
+                <h3 className="font-bold mb-2">振り返りと決断</h3>
+                <p className="mb-4 text-gray-700">
+                  選択肢のメリット・デメリットを全体的に眺めて、あなたの決断を記録しましょう。
+                  特に「選択した場合に失うこと」に対する対処法も考えてみてください。
+                </p>
+                <textarea
+                  value={currentMatrix.reflection}
+                  onChange={(e) =>
+                    setCurrentMatrix((prev) => ({
+                      ...prev,
+                      reflection: e.target.value,
+                    }))
+                  }
+                  placeholder="全体を見た感想や、最終的な決断、「選択したら失うこと」への対処法などを記入してください..."
+                  className="w-full p-2 border rounded h-32"
+                />
+              </div>
             </CardContent>
             <CardFooter>
               <Button onClick={saveMatrix} className="w-full" variant="default">
@@ -258,7 +271,10 @@ export const DecisionMatrixApp = () => {
               )}
             </CardHeader>
             <CardContent>
-              <MatrixView matrix={currentMatrix} showReflection={showReflection} />
+              <MatrixView
+                matrix={currentMatrix}
+                showReflection={showReflection}
+              />
             </CardContent>
             <CardFooter className="flex space-x-2">
               <Button
@@ -297,29 +313,30 @@ export const DecisionMatrixApp = () => {
       {/* ステップナビゲーション（固定表示） */}
       {currentStep <= 5 && (
         <div className="bg-white pt-4">
-        <div className="container mx-auto max-w-6xl flex justify-between">
-          <Button
-            type="button"
-            onClick={prevStep}
-            disabled={currentStep === 0}
-            variant={currentStep === 0 ? "ghost" : "default"}
-            className={currentStep === 0 ? "text-gray-300" : ""}
-          >
-            戻る
-          </Button>
-          <Button
-            type="button"
-            onClick={nextStep}
-            disabled={currentStep === STEPS.length - 1}
-            variant={currentStep === STEPS.length - 1 ? "ghost" : "default"}
-            className={currentStep === STEPS.length - 1 ? "text-gray-300" : ""}
-          >
-            次へ
-          </Button>
-        </div>
+          <div className="container mx-auto max-w-6xl flex justify-between">
+            <Button
+              type="button"
+              onClick={prevStep}
+              disabled={currentStep === 0}
+              variant={currentStep === 0 ? "ghost" : "default"}
+              className={currentStep === 0 ? "text-gray-300" : ""}
+            >
+              戻る
+            </Button>
+            <Button
+              type="button"
+              onClick={nextStep}
+              disabled={currentStep === STEPS.length - 1}
+              variant={currentStep === STEPS.length - 1 ? "ghost" : "default"}
+              className={
+                currentStep === STEPS.length - 1 ? "text-gray-300" : ""
+              }
+            >
+              次へ
+            </Button>
+          </div>
         </div>
       )}
     </div>
   );
 };
-

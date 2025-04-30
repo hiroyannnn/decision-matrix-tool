@@ -39,11 +39,7 @@ export const SavedMatricesList: React.FC<SavedMatricesListProps> = ({
               </CardDescription>
             </CardHeader>
             <CardFooter className="flex justify-end space-x-2">
-              <Button
-                onClick={() => onLoad(index)}
-                variant="default"
-                size="sm"
-              >
+              <Button onClick={() => onLoad(index)} variant="default" size="sm">
                 表示
               </Button>
               <Button
@@ -60,4 +56,3 @@ export const SavedMatricesList: React.FC<SavedMatricesListProps> = ({
     </div>
   );
 };
-

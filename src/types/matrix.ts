@@ -11,4 +11,8 @@ export type Matrix = {
   reflection: string;
 };
 
-export type QuadrantType = 'plusPlus' | 'plusMinus' | 'minusPlus' | 'minusMinus';
+export type QuadrantType =
+  | "plusPlus"
+  | "plusMinus"
+  | "minusPlus"
+  | "minusMinus";

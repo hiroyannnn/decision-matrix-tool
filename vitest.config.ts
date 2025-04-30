@@ -21,7 +21,7 @@ export default defineConfig({
     include: [
       "./pages/**/*.{test,spec}.{js,jsx,ts,tsx}",
       "./src/**/*.{test,spec}.{js,jsx,ts,tsx}",
-      "./tests/**/*.{test,spec}.{js,jsx,ts,tsx}"
+      "./tests/**/*.{test,spec}.{js,jsx,ts,tsx}",
     ],
     coverage: {
       provider: "istanbul",

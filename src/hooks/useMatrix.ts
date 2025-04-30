@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { INITIAL_MATRIX } from '../constants/matrix';
-import type { Matrix } from '../types/matrix';
+import { useEffect, useState } from "react";
+import { INITIAL_MATRIX } from "../constants/matrix";
+import type { Matrix } from "../types/matrix";
 
 export const useMatrix = () => {
   const [savedMatrices, setSavedMatrices] = useState<Matrix[]>([]);
@@ -59,15 +59,15 @@ export const useMatrix = () => {
     setCurrentMatrix(updatedMatrix);
   };
 
-  const addItemToQuadrant = (quadrant: keyof Matrix['quadrants'], text: string) => {
+  const addItemToQuadrant = (
+    quadrant: keyof Matrix["quadrants"],
+    text: string,
+  ) => {
     setCurrentMatrix((prev) => {
       const updatedQuadrants = { ...prev.quadrants };
       updatedQuadrants[quadrant] = {
         ...updatedQuadrants[quadrant],
-        items: [
-          ...updatedQuadrants[quadrant].items,
-          { id: nextItemId, text },
-        ],
+        items: [...updatedQuadrants[quadrant].items, { id: nextItemId, text }],
       };
       return { ...prev, quadrants: updatedQuadrants };
     });
@@ -75,13 +75,13 @@ export const useMatrix = () => {
     setNextItemId((prevId) => prevId + 1);
   };
 
-  const removeItem = (quadrant: keyof Matrix['quadrants'], itemId: number) => {
+  const removeItem = (quadrant: keyof Matrix["quadrants"], itemId: number) => {
     setCurrentMatrix((prev) => {
       const updatedQuadrants = { ...prev.quadrants };
       updatedQuadrants[quadrant] = {
         ...updatedQuadrants[quadrant],
         items: updatedQuadrants[quadrant].items.filter(
-          (item) => item.id !== itemId
+          (item) => item.id !== itemId,
         ),
       };
       return { ...prev, quadrants: updatedQuadrants };

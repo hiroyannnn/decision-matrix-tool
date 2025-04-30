@@ -39,9 +39,11 @@ vi.mock("next/router", () => ({
 
 // Next.jsのimageモック
 vi.mock("next/image", () => ({
-  default: vi.fn().mockImplementation(({ src, alt, ...props }) => (
-    <img src={src} alt={alt} {...props} />
-  )),
+  default: vi
+    .fn()
+    .mockImplementation(({ src, alt, ...props }) => (
+      <img src={src} alt={alt} {...props} />
+    )),
 }));
 
 // Next.jsのheadモック

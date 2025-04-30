@@ -26,4 +26,3 @@ export const ReflectionVisibilityToggle: React.FC<{
     </div>
   );
 };
-

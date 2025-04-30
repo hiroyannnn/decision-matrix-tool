@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   // ビルド出力ディレクトリ
-  distDir: '.next',
+  distDir: ".next",
   poweredByHeader: false,
   // 本番環境でのベースパス（必要な場合）
   // basePath: '/decision-matrix-tool',
@@ -13,7 +13,7 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': __dirname,
+      "@": __dirname,
     };
     return config;
   },
