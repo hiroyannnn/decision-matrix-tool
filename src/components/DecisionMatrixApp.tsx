@@ -6,7 +6,6 @@ import { Button } from "./atoms/Button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -22,7 +21,6 @@ import { TitleStep } from "./steps/TitleStep";
 
 export const DecisionMatrixApp = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [viewMode, setViewMode] = useState<"edit" | "view">("edit");
   const [showReflection, setShowReflection] = useState(true);
 
   const {
@@ -79,7 +77,6 @@ export const DecisionMatrixApp = () => {
           onLoad={(index) => {
             loadMatrix(index);
             setCurrentStep(6);
-            setViewMode("view");
           }}
           onDelete={deleteMatrix}
         />
@@ -168,11 +165,10 @@ export const DecisionMatrixApp = () => {
           </Card>
         )}
 
-        {viewMode === "view" && currentStep === 6 && (
+        {currentStep === 6 && (
           <MatrixViewMode
             matrix={currentMatrix}
             showReflection={showReflection}
-            onSwitchToEdit={() => setViewMode("edit")}
             onNewMatrix={() => {
               setCurrentMatrix({
                 ...currentMatrix,
@@ -187,13 +183,11 @@ export const DecisionMatrixApp = () => {
                 reflection: "",
               });
               setCurrentStep(0);
-              setViewMode("edit");
             }}
           />
         )}
       </main>
 
-      {/* ステップナビゲーション（固定表示） */}
       {currentStep <= 5 && (
         <StepNavigation
           currentStep={currentStep}

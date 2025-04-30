@@ -14,7 +14,6 @@ import { MatrixView } from "./MatrixView";
 type MatrixViewModeProps = {
   matrix: Matrix;
   showReflection: boolean;
-  onSwitchToEdit: () => void;
   onNewMatrix: () => void;
 };
 
@@ -26,7 +25,6 @@ type MatrixViewModeProps = {
 export const MatrixViewMode: FC<MatrixViewModeProps> = ({
   matrix,
   showReflection,
-  onSwitchToEdit,
   onNewMatrix,
 }) => {
   return (
@@ -44,10 +42,7 @@ export const MatrixViewMode: FC<MatrixViewModeProps> = ({
       <CardContent>
         <MatrixView matrix={matrix} showReflection={showReflection} />
       </CardContent>
-      <CardFooter className="flex space-x-2">
-        <Button onClick={onSwitchToEdit} variant="default" className="mr-2">
-          編集モードに切り替え
-        </Button>
+      <CardFooter className="flex justify-end">
         <Button onClick={onNewMatrix} variant="default">
           新しいマトリックスを作成
         </Button>
