@@ -17,13 +17,43 @@ export const useMatrix = () => {
     }
   }, []);
 
-  const saveMatrix = () => {
-    const matrixToSave = { ...currentMatrix, date: new Date().toISOString() };
-    const updatedMatrices = [...savedMatrices, matrixToSave];
-    localStorage.setItem("decisionMatrices", JSON.stringify(updatedMatrices));
-    setSavedMatrices(updatedMatrices);
-    setCurrentMatrix({ ...INITIAL_MATRIX, date: new Date().toISOString() });
-    setNextItemId(1);
+  const saveMatrix = (matrix: Matrix) => {
+    console.log("保存実行:", {
+      title: matrix.title,
+      reflection: matrix.reflection,
+      date: matrix.date,
+    });
+
+    try {
+      const savedData = localStorage.getItem("decisionMatrices");
+      console.log("現在の保存データ:", savedData);
+
+      const currentSavedMatrices = savedData ? JSON.parse(savedData) : [];
+      console.log("現在のマトリックス一覧:", currentSavedMatrices);
+
+      const updatedMatrices = [...currentSavedMatrices];
+      const existingIndex = updatedMatrices.findIndex(
+        (m) => m.title === matrix.title
+      );
+
+      if (existingIndex >= 0) {
+        console.log("既存のマトリックスを更新:", existingIndex);
+        updatedMatrices[existingIndex] = matrix;
+      } else {
+        console.log("新しいマトリックスを追加");
+        updatedMatrices.push(matrix);
+      }
+
+      const matricesJson = JSON.stringify(updatedMatrices);
+      console.log("保存するデータ:", matricesJson);
+
+      localStorage.setItem("decisionMatrices", matricesJson);
+      setSavedMatrices(updatedMatrices);
+      return true;
+    } catch (error) {
+      console.error("保存エラー:", error);
+      return false;
+    }
   };
 
   const deleteMatrix = (index: number) => {
@@ -92,10 +122,10 @@ export const useMatrix = () => {
     currentMatrix,
     setCurrentMatrix,
     savedMatrices,
-    saveMatrix,
     deleteMatrix,
     loadMatrix,
     addItemToQuadrant,
     removeItem,
+    saveMatrix,
   };
 };
