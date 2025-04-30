@@ -16,7 +16,7 @@ const MatrixGrid = React.forwardRef<HTMLDivElement, MatrixGridProps>(
         {children}
       </div>
     );
-  },
+  }
 );
 
 MatrixGrid.displayName = "MatrixGrid";

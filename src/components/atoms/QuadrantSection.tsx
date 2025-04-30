@@ -12,7 +12,7 @@ export interface QuadrantSectionProps
 const QuadrantSection = React.forwardRef<HTMLDivElement, QuadrantSectionProps>(
   (
     { title, colorScheme = "green", children, className = "", ...props },
-    ref,
+    ref
   ) => {
     const bgColorClass = {
       green: "bg-green-50",
@@ -31,7 +31,7 @@ const QuadrantSection = React.forwardRef<HTMLDivElement, QuadrantSectionProps>(
         {children}
       </div>
     );
-  },
+  }
 );
 
 QuadrantSection.displayName = "QuadrantSection";

@@ -41,7 +41,7 @@ export const DecisionMatrixApp = () => {
       4: "minusMinus" as QuadrantType,
       5: null, // 振り返りステップ
     }),
-    [],
+    []
   );
 
   useEffect(() => {
@@ -164,10 +164,16 @@ export const DecisionMatrixApp = () => {
                 <CardTitle>
                   {stepToQuadrant[currentStep] ? (
                     <>
-                      {QUADRANT_DESCRIPTIONS[stepToQuadrant[currentStep]!]} (
                       {
-                        currentMatrix.quadrants[stepToQuadrant[currentStep]!]
-                          .title
+                        QUADRANT_DESCRIPTIONS[
+                          stepToQuadrant[currentStep] as QuadrantType
+                        ]
+                      }{" "}
+                      (
+                      {
+                        currentMatrix.quadrants[
+                          stepToQuadrant[currentStep] as QuadrantType
+                        ].title
                       }
                       )
                     </>
@@ -184,8 +190,8 @@ export const DecisionMatrixApp = () => {
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && e.currentTarget.value.trim()) {
                           addItemToQuadrant(
-                            stepToQuadrant[currentStep]!,
-                            e.currentTarget.value.trim(),
+                            stepToQuadrant[currentStep] as QuadrantType,
+                            e.currentTarget.value.trim()
                           );
                           e.currentTarget.value = "";
                         }
@@ -195,7 +201,7 @@ export const DecisionMatrixApp = () => {
                     />
                     <ul className="space-y-2">
                       {currentMatrix.quadrants[
-                        stepToQuadrant[currentStep]!
+                        stepToQuadrant[currentStep] as QuadrantType
                       ].items.map((item) => (
                         <li
                           key={item.id}
@@ -204,7 +210,10 @@ export const DecisionMatrixApp = () => {
                           <span>{item.text}</span>
                           <Button
                             onClick={() =>
-                              removeItem(stepToQuadrant[currentStep]!, item.id)
+                              removeItem(
+                                stepToQuadrant[currentStep] as QuadrantType,
+                                item.id
+                              )
                             }
                             variant="ghost"
                             size="sm"

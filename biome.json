@@ -7,11 +7,25 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["node_modules", "dist", "build", "public"]
+    "ignore": [
+      ".next/**",
+      "node_modules/**",
+      "package.json",
+      "out/**",
+      "dist/**",
+      "build/**",
+      ".cache/**",
+      ".vscode/**",
+      ".DS_Store",
+      "tests/**/*"
+    ]
   },
   "formatter": {
     "enabled": true,
-    "indentStyle": "space"
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80,
+    "ignore": ["package.json", ".next/**", "node_modules/**"]
   },
   "organizeImports": {
     "enabled": true
@@ -19,12 +33,28 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
-    }
+      "recommended": true,
+      "correctness": {
+        "useExhaustiveDependencies": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn"
+      },
+      "performance": {
+        "noDelete": "warn"
+      },
+      "a11y": {
+        "recommended": true
+      }
+    },
+    "ignore": ["package.json", ".next/**", "node_modules/**"]
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "double"
+      "quoteStyle": "double",
+      "jsxQuoteStyle": "double",
+      "trailingCommas": "es5",
+      "semicolons": "always"
     }
   }
 }

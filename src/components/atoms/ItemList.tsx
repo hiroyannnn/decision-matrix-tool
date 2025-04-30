@@ -12,7 +12,7 @@ const ItemList = React.forwardRef<HTMLUListElement, ItemListProps>(
         {children}
       </ul>
     );
-  },
+  }
 );
 
 ItemList.displayName = "ItemList";
@@ -29,7 +29,7 @@ const Item = React.forwardRef<HTMLLIElement, ItemProps>(
         {children}
       </li>
     );
-  },
+  }
 );
 
 Item.displayName = "Item";

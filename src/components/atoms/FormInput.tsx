@@ -16,7 +16,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
         {...props}
       />
     );
-  },
+  }
 );
 
 TextInput.displayName = "TextInput";
@@ -36,7 +36,7 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
         {...props}
       />
     );
-  },
+  }
 );
 
 TextArea.displayName = "TextArea";

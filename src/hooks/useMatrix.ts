@@ -61,7 +61,7 @@ export const useMatrix = () => {
 
   const addItemToQuadrant = (
     quadrant: keyof Matrix["quadrants"],
-    text: string,
+    text: string
   ) => {
     setCurrentMatrix((prev) => {
       const updatedQuadrants = { ...prev.quadrants };
@@ -81,7 +81,7 @@ export const useMatrix = () => {
       updatedQuadrants[quadrant] = {
         ...updatedQuadrants[quadrant],
         items: updatedQuadrants[quadrant].items.filter(
-          (item) => item.id !== itemId,
+          (item) => item.id !== itemId
         ),
       };
       return { ...prev, quadrants: updatedQuadrants };
