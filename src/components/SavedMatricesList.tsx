@@ -1,11 +1,11 @@
-import React from "react";
+import type React from "react";
 import { Button } from "./atoms/Button";
 import {
   Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
   CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "./atoms/Card";
 
 type Matrix = {
@@ -19,7 +19,7 @@ type SavedMatricesListProps = {
   onDelete: (index: number) => void;
 };
 
-const SavedMatricesList: React.FC<SavedMatricesListProps> = ({
+export const SavedMatricesList: React.FC<SavedMatricesListProps> = ({
   matrices,
   onLoad,
   onDelete,
@@ -61,4 +61,3 @@ const SavedMatricesList: React.FC<SavedMatricesListProps> = ({
   );
 };
 
-export default SavedMatricesList;
