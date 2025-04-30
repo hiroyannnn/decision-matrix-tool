@@ -1,11 +1,11 @@
-import React from "react";
+import type React from "react";
 import { Button } from "./atoms/Button";
 import {
   Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
   CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "./atoms/Card";
 
 type Matrix = {
@@ -19,7 +19,7 @@ type SavedMatricesListProps = {
   onDelete: (index: number) => void;
 };
 
-const SavedMatricesList: React.FC<SavedMatricesListProps> = ({
+export const SavedMatricesList: React.FC<SavedMatricesListProps> = ({
   matrices,
   onLoad,
   onDelete,
@@ -39,11 +39,7 @@ const SavedMatricesList: React.FC<SavedMatricesListProps> = ({
               </CardDescription>
             </CardHeader>
             <CardFooter className="flex justify-end space-x-2">
-              <Button
-                onClick={() => onLoad(index)}
-                variant="default"
-                size="sm"
-              >
+              <Button onClick={() => onLoad(index)} variant="default" size="sm">
                 表示
               </Button>
               <Button
@@ -60,5 +56,3 @@ const SavedMatricesList: React.FC<SavedMatricesListProps> = ({
     </div>
   );
 };
-
-export default SavedMatricesList;

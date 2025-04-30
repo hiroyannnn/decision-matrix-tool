@@ -1,9 +1,12 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.4.1/schema.json",
-  "organizeImports": {
-    "enabled": true
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "vcs": {
+    "enabled": false,
+    "clientKind": "git",
+    "useIgnoreFile": false
   },
   "files": {
+    "ignoreUnknown": false,
     "ignore": [
       ".next/**",
       "node_modules/**",
@@ -13,8 +16,19 @@
       "build/**",
       ".cache/**",
       ".vscode/**",
-      ".DS_Store"
+      ".DS_Store",
+      "tests/**/*"
     ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80,
+    "ignore": ["package.json", ".next/**", "node_modules/**"]
+  },
+  "organizeImports": {
+    "enabled": true
   },
   "linter": {
     "enabled": true,
@@ -33,24 +47,7 @@
         "recommended": true
       }
     },
-    "ignore": ["package.json", ".next/**", "node_modules/**"],
-    "include": [
-      "src/**/*.{ts,tsx,js,jsx}",
-      "tests/**/*.{ts,tsx,js,jsx}",
-      "pages/**/*.{ts,tsx,js,jsx}"
-    ]
-  },
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineWidth": 80,
-    "ignore": ["package.json", ".next/**", "node_modules/**"],
-    "include": [
-      "src/**/*.{ts,tsx,js,jsx}",
-      "tests/**/*.{ts,tsx,js,jsx}",
-      "pages/**/*.{ts,tsx,js,jsx}"
-    ]
+    "ignore": ["package.json", ".next/**", "node_modules/**"]
   },
   "javascript": {
     "formatter": {

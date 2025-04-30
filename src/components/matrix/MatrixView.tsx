@@ -1,5 +1,5 @@
-import React from 'react';
-import type { Matrix } from '../../types/matrix';
+import React from "react";
+import type { Matrix } from "../../types/matrix";
 
 type QuadrantViewProps = {
   title: string;
@@ -26,7 +26,10 @@ type MatrixViewProps = {
   showReflection?: boolean;
 };
 
-export const MatrixView = ({ matrix, showReflection = true }: MatrixViewProps) => (
+export const MatrixView = ({
+  matrix,
+  showReflection = true,
+}: MatrixViewProps) => (
   <div>
     <div className="grid grid-cols-2 gap-4 mb-6">
       <QuadrantView

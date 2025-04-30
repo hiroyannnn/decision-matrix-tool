@@ -1,6 +1,7 @@
 import React from "react";
 
-export interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+export interface TextInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 /**
  * TextInputコンポーネント - テキスト入力フィールドを提供するコンポーネント
@@ -20,7 +21,8 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
 
 TextInput.displayName = "TextInput";
 
-export interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+export interface TextAreaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
 /**
  * TextAreaコンポーネント - 複数行テキスト入力フィールドを提供するコンポーネント

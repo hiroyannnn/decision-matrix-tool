@@ -8,7 +8,11 @@ export interface MatrixGridProps extends React.HTMLAttributes<HTMLDivElement> {}
 const MatrixGrid = React.forwardRef<HTMLDivElement, MatrixGridProps>(
   ({ children, className = "", ...props }, ref) => {
     return (
-      <div ref={ref} className={`grid grid-cols-2 gap-4 mb-6 ${className}`} {...props}>
+      <div
+        ref={ref}
+        className={`grid grid-cols-2 gap-4 mb-6 ${className}`}
+        {...props}
+      >
         {children}
       </div>
     );

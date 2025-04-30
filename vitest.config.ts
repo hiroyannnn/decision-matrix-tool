@@ -1,6 +1,6 @@
-import { resolve } from "path";
+import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
@@ -21,7 +21,7 @@ export default defineConfig({
     include: [
       "./pages/**/*.{test,spec}.{js,jsx,ts,tsx}",
       "./src/**/*.{test,spec}.{js,jsx,ts,tsx}",
-      "./tests/**/*.{test,spec}.{js,jsx,ts,tsx}"
+      "./tests/**/*.{test,spec}.{js,jsx,ts,tsx}",
     ],
     coverage: {
       provider: "istanbul",
