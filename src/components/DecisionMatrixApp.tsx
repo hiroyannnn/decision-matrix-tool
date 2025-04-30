@@ -300,6 +300,10 @@ const DecisionMatrixApp = () => {
         )}
       </main>
 
+      <footer className="bg-gray-800 text-white p-4 text-center">
+        <p>&copy; 2025 決断マトリックスツール</p>
+      </footer>
+      
       {/* ステップナビゲーション（固定表示） */}
       {currentStep <= 5 && (
         <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 border-t">
@@ -325,10 +329,6 @@ const DecisionMatrixApp = () => {
           </div>
         </div>
       )}
-
-      <footer className="bg-gray-800 text-white p-4 text-center mb-16">
-        <p>&copy; 2025 決断マトリックスツール</p>
-      </footer>
     </div>
   );
 };
