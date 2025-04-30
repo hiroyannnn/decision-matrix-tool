@@ -1,5 +1,4 @@
 import "../styles/globals.css";
-import "../styles/custom.css";
 
 /**
  * カスタムAppコンポーネント - すべてのページで共有されるレイアウトやプロバイダーを管理
