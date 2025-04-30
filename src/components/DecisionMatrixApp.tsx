@@ -15,6 +15,7 @@ import { StepNavigation } from "./atoms/StepNavigation";
 import { MatrixReflection } from "./matrix/MatrixReflection";
 import { MatrixView } from "./matrix/MatrixView";
 import { MatrixViewMode } from "./matrix/MatrixViewMode";
+import { QuadrantInput } from "./matrix/QuadrantInput";
 import { SavedMatricesList } from "./matrix/SavedMatricesList";
 import { StepGuide } from "./steps/StepGuide";
 import { TitleStep } from "./steps/TitleStep";
@@ -111,75 +112,24 @@ export const DecisionMatrixApp = () => {
 
         {currentStep >= 1 && currentStep <= 4 && (
           <div className="grid grid-cols-1 gap-6">
-            {/* 象限入力 (ステップ2-5) */}
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  {stepToQuadrant[currentStep] ? (
-                    <>
-                      {
-                        QUADRANT_DESCRIPTIONS[
-                          stepToQuadrant[currentStep] as QuadrantType
-                        ]
-                      }{" "}
-                      (
-                      {
-                        currentMatrix.quadrants[
-                          stepToQuadrant[currentStep] as QuadrantType
-                        ].title
-                      }
-                      )
-                    </>
-                  ) : (
-                    "入力フォーム"
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {stepToQuadrant[currentStep] && (
-                  <div>
-                    <input
-                      type="text"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && e.currentTarget.value.trim()) {
-                          addItemToQuadrant(
-                            stepToQuadrant[currentStep] as QuadrantType,
-                            e.currentTarget.value.trim()
-                          );
-                          e.currentTarget.value = "";
-                        }
-                      }}
-                      placeholder="項目を入力してEnterキーを押してください"
-                      className="w-full p-2 border rounded mb-4"
-                    />
-                    <ul className="space-y-2">
-                      {currentMatrix.quadrants[
-                        stepToQuadrant[currentStep] as QuadrantType
-                      ].items.map((item) => (
-                        <li
-                          key={item.id}
-                          className="flex justify-between items-center p-2 bg-gray-50 rounded"
-                        >
-                          <span>{item.text}</span>
-                          <Button
-                            onClick={() =>
-                              removeItem(
-                                stepToQuadrant[currentStep] as QuadrantType,
-                                item.id
-                              )
-                            }
-                            variant="ghost"
-                            size="sm"
-                          >
-                            削除
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <QuadrantInput
+              matrix={currentMatrix}
+              quadrantType={stepToQuadrant[currentStep] as QuadrantType}
+              quadrantDescription={
+                QUADRANT_DESCRIPTIONS[
+                  stepToQuadrant[currentStep] as QuadrantType
+                ]
+              }
+              onAddItem={(text) =>
+                addItemToQuadrant(
+                  stepToQuadrant[currentStep] as QuadrantType,
+                  text
+                )
+              }
+              onRemoveItem={(itemId) =>
+                removeItem(stepToQuadrant[currentStep] as QuadrantType, itemId)
+              }
+            />
           </div>
         )}
 
