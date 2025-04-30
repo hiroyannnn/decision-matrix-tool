@@ -2,22 +2,25 @@ import React, { useState, useEffect, useMemo } from "react";
 import { QUADRANT_DESCRIPTIONS, STEPS } from "../constants/matrix";
 import { useMatrix } from "../hooks/useMatrix";
 import type { QuadrantType } from "../types/matrix";
-import { ReflectionVisibilityToggle } from "./ReflectionVisibilityToggle";
 import { Button } from "./atoms/Button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "./atoms/Card";
+import { StepNavigation } from "./atoms/StepNavigation";
+import { MatrixReflection } from "./matrix/MatrixReflection";
 import { MatrixView } from "./matrix/MatrixView";
+import { MatrixViewMode } from "./matrix/MatrixViewMode";
+import { QuadrantInput } from "./matrix/QuadrantInput";
+import { SavedMatricesList } from "./matrix/SavedMatricesList";
+import { StepGuide } from "./steps/StepGuide";
 import { TitleStep } from "./steps/TitleStep";
 
 export const DecisionMatrixApp = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [viewMode, setViewMode] = useState<"edit" | "view">("edit");
   const [showReflection, setShowReflection] = useState(true);
 
   const {
@@ -69,78 +72,29 @@ export const DecisionMatrixApp = () => {
   return (
     <div className="flex flex-col bg-gray-100">
       <main className="flex-grow p-4">
-        {/* 保存されたマトリックス一覧 */}
-        {savedMatrices.length > 0 && (
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">保存したマトリックス</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {savedMatrices.map((matrix, index) => (
-                <Card key={`matrix-${matrix.date}-${index}`}>
-                  <CardHeader>
-                    <CardTitle>{matrix.title}</CardTitle>
-                    <CardDescription>
-                      {new Date(matrix.date).toLocaleDateString()}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardFooter className="flex justify-end space-x-2">
-                    <Button
-                      onClick={() => {
-                        loadMatrix(index);
-                        setCurrentStep(6);
-                        setViewMode("view");
-                      }}
-                      variant="default"
-                      size="sm"
-                    >
-                      表示
-                    </Button>
-                    <Button
-                      onClick={() => deleteMatrix(index)}
-                      variant="destructive"
-                      size="sm"
-                    >
-                      削除
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </div>
+        <SavedMatricesList
+          matrices={savedMatrices}
+          onLoad={(index) => {
+            loadMatrix(index);
+            setCurrentStep(6);
+          }}
+          onDelete={deleteMatrix}
+        />
+
+        {currentStep !== 6 && (
+          <StepGuide
+            currentStep={currentStep}
+            steps={STEPS}
+            showReflection={showReflection}
+            onToggleReflection={setShowReflection}
+          />
         )}
 
-        {/* ステップガイド */}
-        <div className="mb-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>現在のステップ</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{STEPS[currentStep]}</p>
+        <MatrixReflection
+          matrix={currentMatrix}
+          showReflection={showReflection && currentStep > 0 && currentStep < 5}
+        />
 
-              {/* 「全体の振り返り」表示切り替えチェックボックス（最初のページ以外で表示） */}
-              {currentStep > 0 && currentStep < 5 && (
-                <div className="mt-4 mb-2">
-                  <ReflectionVisibilityToggle
-                    showReflection={showReflection}
-                    setShowReflection={setShowReflection}
-                  />
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* 全体の振り返り表示 (ステップ2-5) */}
-        {showReflection && currentStep > 0 && currentStep < 5 && (
-          <div className="bg-white p-4 rounded shadow mb-4">
-            <h2 className="text-xl font-semibold mb-2">
-              {currentMatrix.title}
-            </h2>
-            <MatrixView matrix={currentMatrix} showReflection={false} />
-          </div>
-        )}
-
-        {/* マトリックスのタイトル入力 (ステップ1) */}
         {currentStep === 0 && (
           <TitleStep
             title={currentMatrix.title}
@@ -155,82 +109,29 @@ export const DecisionMatrixApp = () => {
           />
         )}
 
-        {/* ステップ2-5のレイアウト（入力と振り返りを横並びに） */}
         {currentStep >= 1 && currentStep <= 4 && (
           <div className="grid grid-cols-1 gap-6">
-            {/* 象限入力 (ステップ2-5) */}
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  {stepToQuadrant[currentStep] ? (
-                    <>
-                      {
-                        QUADRANT_DESCRIPTIONS[
-                          stepToQuadrant[currentStep] as QuadrantType
-                        ]
-                      }{" "}
-                      (
-                      {
-                        currentMatrix.quadrants[
-                          stepToQuadrant[currentStep] as QuadrantType
-                        ].title
-                      }
-                      )
-                    </>
-                  ) : (
-                    "入力フォーム"
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {stepToQuadrant[currentStep] && (
-                  <div>
-                    <input
-                      type="text"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && e.currentTarget.value.trim()) {
-                          addItemToQuadrant(
-                            stepToQuadrant[currentStep] as QuadrantType,
-                            e.currentTarget.value.trim()
-                          );
-                          e.currentTarget.value = "";
-                        }
-                      }}
-                      placeholder="項目を入力してEnterキーを押してください"
-                      className="w-full p-2 border rounded mb-4"
-                    />
-                    <ul className="space-y-2">
-                      {currentMatrix.quadrants[
-                        stepToQuadrant[currentStep] as QuadrantType
-                      ].items.map((item) => (
-                        <li
-                          key={item.id}
-                          className="flex justify-between items-center p-2 bg-gray-50 rounded"
-                        >
-                          <span>{item.text}</span>
-                          <Button
-                            onClick={() =>
-                              removeItem(
-                                stepToQuadrant[currentStep] as QuadrantType,
-                                item.id
-                              )
-                            }
-                            variant="ghost"
-                            size="sm"
-                          >
-                            削除
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <QuadrantInput
+              matrix={currentMatrix}
+              quadrantType={stepToQuadrant[currentStep] as QuadrantType}
+              quadrantDescription={
+                QUADRANT_DESCRIPTIONS[
+                  stepToQuadrant[currentStep] as QuadrantType
+                ]
+              }
+              onAddItem={(text) =>
+                addItemToQuadrant(
+                  stepToQuadrant[currentStep] as QuadrantType,
+                  text
+                )
+              }
+              onRemoveItem={(itemId) =>
+                removeItem(stepToQuadrant[currentStep] as QuadrantType, itemId)
+              }
+            />
           </div>
         )}
 
-        {/* 振り返り (ステップ6) */}
         {currentStep === 5 && (
           <Card className="mb-6">
             <CardHeader>
@@ -266,81 +167,36 @@ export const DecisionMatrixApp = () => {
           </Card>
         )}
 
-        {/* 表示モード */}
-        {viewMode === "view" && currentStep === 6 && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>{currentMatrix.title}</CardTitle>
-              {currentMatrix.description && (
-                <CardDescription>
-                  <div className="p-2 bg-gray-50 rounded">
-                    <p>{currentMatrix.description}</p>
-                  </div>
-                </CardDescription>
-              )}
-            </CardHeader>
-            <CardContent>
-              <MatrixView
-                matrix={currentMatrix}
-                showReflection={showReflection}
-              />
-            </CardContent>
-            <CardFooter className="flex space-x-2">
-              <Button
-                onClick={() => setViewMode("edit")}
-                variant="default"
-                className="mr-2"
-              >
-                編集モードに切り替え
-              </Button>
-              <Button
-                onClick={() => {
-                  setCurrentMatrix({
-                    ...currentMatrix,
-                    title: "",
-                    description: "",
-                    quadrants: {
-                      plusPlus: { title: "++", items: [] },
-                      plusMinus: { title: "+-", items: [] },
-                      minusPlus: { title: "-+", items: [] },
-                      minusMinus: { title: "--", items: [] },
-                    },
-                    reflection: "",
-                  });
-                  setCurrentStep(0);
-                  setViewMode("edit");
-                }}
-                variant="default"
-              >
-                新しいマトリックスを作成
-              </Button>
-            </CardFooter>
-          </Card>
+        {currentStep === 6 && (
+          <MatrixViewMode
+            matrix={currentMatrix}
+            showReflection={showReflection}
+            onNewMatrix={() => {
+              setCurrentMatrix({
+                ...currentMatrix,
+                title: "",
+                description: "",
+                quadrants: {
+                  plusPlus: { title: "++", items: [] },
+                  plusMinus: { title: "+-", items: [] },
+                  minusPlus: { title: "-+", items: [] },
+                  minusMinus: { title: "--", items: [] },
+                },
+                reflection: "",
+              });
+              setCurrentStep(0);
+            }}
+          />
         )}
       </main>
 
-      {/* ステップナビゲーション（固定表示） */}
       {currentStep <= 5 && (
-        <div className="container mx-auto max-w-6xl flex justify-between mb-4">
-          <Button
-            type="button"
-            onClick={prevStep}
-            disabled={currentStep === 0}
-            variant={currentStep === 0 ? "ghost" : "default"}
-            className={currentStep === 0 ? "text-gray-300" : ""}
-          >
-            戻る
-          </Button>
-          <Button
-            type="button"
-            onClick={nextStep}
-            disabled={currentStep === STEPS.length - 1}
-            variant={currentStep === STEPS.length - 1 ? "ghost" : "default"}
-            className={currentStep === STEPS.length - 1 ? "text-gray-300" : ""}
-          >
-            次へ
-          </Button>
-        </div>
+        <StepNavigation
+          currentStep={currentStep}
+          totalSteps={STEPS.length}
+          onPrev={prevStep}
+          onNext={nextStep}
+        />
       )}
     </div>
   );
