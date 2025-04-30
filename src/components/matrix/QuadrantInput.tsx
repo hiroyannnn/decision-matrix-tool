@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { useState } from "react";
 import type { Matrix, QuadrantType } from "../../types/matrix";
 import { Button } from "../atoms/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../atoms/Card";
@@ -23,7 +24,15 @@ export const QuadrantInput: FC<QuadrantInputProps> = ({
   onAddItem,
   onRemoveItem,
 }) => {
+  const [inputValue, setInputValue] = useState("");
   const quadrant = matrix.quadrants[quadrantType];
+
+  const handleAddItem = () => {
+    if (inputValue.trim()) {
+      onAddItem(inputValue.trim());
+      setInputValue("");
+    }
+  };
 
   return (
     <Card>
@@ -34,17 +43,27 @@ export const QuadrantInput: FC<QuadrantInputProps> = ({
       </CardHeader>
       <CardContent>
         <div>
-          <input
-            type="text"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && e.currentTarget.value.trim()) {
-                onAddItem(e.currentTarget.value.trim());
-                e.currentTarget.value = "";
-              }
-            }}
-            placeholder="項目を入力してEnterキーを押してください"
-            className="w-full p-2 border rounded mb-4"
-          />
+          <div className="flex mb-4">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && inputValue.trim()) {
+                  handleAddItem();
+                }
+              }}
+              placeholder="項目を入力してEnterキーを押すか、追加ボタンをクリックしてください"
+              className="flex-grow p-2 border rounded-l"
+            />
+            <Button
+              onClick={handleAddItem}
+              className="rounded-l-none"
+              disabled={!inputValue.trim()}
+            >
+              追加
+            </Button>
+          </div>
           <ul className="space-y-2">
             {quadrant.items.map((item) => (
               <li
