@@ -40,6 +40,10 @@ const DecisionMatrixApp = () => {
 
   // 次のステップに進む
   const nextStep = () => {
+    if (currentStep === 0 && currentMatrix.title.trim() === '') {
+      return;
+    }
+    
     if (currentStep < STEPS.length - 1) {
       setCurrentStep((prev) => prev + 1);
     }
@@ -118,26 +122,6 @@ const DecisionMatrixApp = () => {
                 </div>
               )}
             </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button
-                type="button"
-                onClick={prevStep}
-                disabled={currentStep === 0}
-                variant={currentStep === 0 ? "ghost" : "default"}
-                className={currentStep === 0 ? "text-gray-300" : ""}
-              >
-                戻る
-              </Button>
-              <Button
-                type="button"
-                onClick={nextStep}
-                disabled={currentStep === STEPS.length - 1}
-                variant={currentStep === STEPS.length - 1 ? "ghost" : "default"}
-                className={currentStep === STEPS.length - 1 ? "text-gray-300" : ""}
-              >
-                次へ
-              </Button>
-            </CardFooter>
           </Card>
         </div>
 
@@ -152,6 +136,7 @@ const DecisionMatrixApp = () => {
             onDescriptionChange={(description) =>
               setCurrentMatrix((prev) => ({ ...prev, description }))
             }
+            showError={currentMatrix.title.trim() === ''}
           />
         )}
 
@@ -318,6 +303,32 @@ const DecisionMatrixApp = () => {
       <footer className="bg-gray-800 text-white p-4 text-center">
         <p>&copy; 2025 決断マトリックスツール</p>
       </footer>
+      
+      {/* ステップナビゲーション（固定表示） */}
+      {currentStep <= 5 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 border-t">
+          <div className="container mx-auto max-w-6xl flex justify-between">
+            <Button
+              type="button"
+              onClick={prevStep}
+              disabled={currentStep === 0}
+              variant={currentStep === 0 ? "ghost" : "default"}
+              className={currentStep === 0 ? "text-gray-300" : ""}
+            >
+              戻る
+            </Button>
+            <Button
+              type="button"
+              onClick={nextStep}
+              disabled={currentStep === STEPS.length - 1}
+              variant={currentStep === STEPS.length - 1 ? "ghost" : "default"}
+              className={currentStep === STEPS.length - 1 ? "text-gray-300" : ""}
+            >
+              次へ
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
