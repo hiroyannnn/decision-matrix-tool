@@ -35,11 +35,11 @@ export const DecisionMatrixApp: React.FC<DecisionMatrixAppProps> = ({
     currentMatrix,
     setCurrentMatrix,
     savedMatrices,
-    saveMatrix,
     deleteMatrix,
     loadMatrix,
     addItemToQuadrant,
     removeItem,
+    setShouldSave,
   } = useMatrix();
 
   // 象限のマッピング
@@ -65,6 +65,10 @@ export const DecisionMatrixApp: React.FC<DecisionMatrixAppProps> = ({
       return;
     }
 
+    if (initialStep === 0) {
+      setShouldSave(true);
+    }
+
     if (initialStep < STEPS.length - 1) {
       router.push(`/?step=${initialStep + 1}`, undefined, { shallow: true });
     }
@@ -80,14 +84,16 @@ export const DecisionMatrixApp: React.FC<DecisionMatrixAppProps> = ({
   return (
     <div className="flex flex-col bg-gray-100">
       <main className="flex-grow p-4">
-        <SavedMatricesList
-          matrices={savedMatrices}
-          onLoad={(index) => {
-            loadMatrix(index);
-            router.push("/?step=6", undefined, { shallow: true });
-          }}
-          onDelete={deleteMatrix}
-        />
+        {initialStep === 0 && (
+          <SavedMatricesList
+            matrices={savedMatrices}
+            onLoad={(index) => {
+              loadMatrix(index);
+              router.push("/?step=6", undefined, { shallow: true });
+            }}
+            onDelete={deleteMatrix}
+          />
+        )}
 
         {initialStep !== 6 && (
           <StepGuide
@@ -167,6 +173,29 @@ export const DecisionMatrixApp: React.FC<DecisionMatrixAppProps> = ({
                 />
               </div>
             </CardContent>
+            <CardFooter>
+              <Button
+                onClick={() => {
+                  setCurrentMatrix({
+                    ...currentMatrix,
+                    title: "",
+                    description: "",
+                    quadrants: {
+                      plusPlus: { title: "++", items: [] },
+                      plusMinus: { title: "+-", items: [] },
+                      minusPlus: { title: "-+", items: [] },
+                      minusMinus: { title: "--", items: [] },
+                    },
+                    reflection: "",
+                  });
+                  router.push("/?step=0", undefined, { shallow: true });
+                }}
+                className="w-full"
+                variant="default"
+              >
+                トップに戻る
+              </Button>
+            </CardFooter>
           </Card>
         )}
 
