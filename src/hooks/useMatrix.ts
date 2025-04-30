@@ -17,14 +17,25 @@ export const useMatrix = () => {
     }
   }, []);
 
-  const saveMatrix = () => {
-    const matrixToSave = { ...currentMatrix, date: new Date().toISOString() };
-    const updatedMatrices = [...savedMatrices, matrixToSave];
-    localStorage.setItem("decisionMatrices", JSON.stringify(updatedMatrices));
-    setSavedMatrices(updatedMatrices);
-    setCurrentMatrix({ ...INITIAL_MATRIX, date: new Date().toISOString() });
-    setNextItemId(1);
-  };
+  // マトリックスの変更を監視して自動保存
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (currentMatrix.title.trim() !== "") {
+      const updatedMatrices = [...savedMatrices];
+      const existingIndex = updatedMatrices.findIndex(
+        (m) => m.title === currentMatrix.title
+      );
+
+      if (existingIndex >= 0) {
+        updatedMatrices[existingIndex] = currentMatrix;
+      } else {
+        updatedMatrices.push(currentMatrix);
+      }
+
+      localStorage.setItem("decisionMatrices", JSON.stringify(updatedMatrices));
+      setSavedMatrices(updatedMatrices);
+    }
+  }, [currentMatrix]);
 
   const deleteMatrix = (index: number) => {
     const updatedMatrices = savedMatrices.filter((_, i) => i !== index);
@@ -92,7 +103,6 @@ export const useMatrix = () => {
     currentMatrix,
     setCurrentMatrix,
     savedMatrices,
-    saveMatrix,
     deleteMatrix,
     loadMatrix,
     addItemToQuadrant,

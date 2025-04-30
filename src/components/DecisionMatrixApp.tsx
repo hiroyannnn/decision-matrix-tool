@@ -167,11 +167,6 @@ export const DecisionMatrixApp: React.FC<DecisionMatrixAppProps> = ({
                 />
               </div>
             </CardContent>
-            <CardFooter>
-              <Button onClick={saveMatrix} className="w-full" variant="default">
-                このマトリックスを保存する
-              </Button>
-            </CardFooter>
           </Card>
         )}
 
