@@ -1,7 +1,10 @@
 import React from "react";
-import { Button as ShadcnButton, ButtonProps as ShadcnButtonProps } from "../ui/button";
+import { Button as ShadcnButton, type ButtonProps as ShadcnButtonProps } from "../ui/button";
 
-export interface ButtonProps extends ShadcnButtonProps {}
+export type ButtonProps = ShadcnButtonProps & {
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  size?: "default" | "sm" | "lg" | "icon";
+};
 
 /**
  * Buttonコンポーネント - shadcn/uiのButtonをラップしたコンポーネント
