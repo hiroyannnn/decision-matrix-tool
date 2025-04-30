@@ -30,14 +30,14 @@ export const MatrixView = ({ matrix, showReflection = true }: MatrixViewProps) =
   <div>
     <div className="grid grid-cols-2 gap-4 mb-6">
       <QuadrantView
+        title="-- 選択しなかったら失うこと"
+        items={matrix.quadrants.minusMinus.items}
+        bgColor="bg-red-50"
+      />
+      <QuadrantView
         title="++ 選択したら得られること"
         items={matrix.quadrants.plusPlus.items}
         bgColor="bg-green-50"
-      />
-      <QuadrantView
-        title="+- 選択したら失うこと"
-        items={matrix.quadrants.plusMinus.items}
-        bgColor="bg-yellow-50"
       />
       <QuadrantView
         title="-+ 選択しなかったら得られること"
@@ -45,9 +45,9 @@ export const MatrixView = ({ matrix, showReflection = true }: MatrixViewProps) =
         bgColor="bg-blue-50"
       />
       <QuadrantView
-        title="-- 選択しなかったら失うこと"
-        items={matrix.quadrants.minusMinus.items}
-        bgColor="bg-red-50"
+        title="+- 選択したら失うこと"
+        items={matrix.quadrants.plusMinus.items}
+        bgColor="bg-yellow-50"
       />
     </div>
 
