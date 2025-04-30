@@ -1,5 +1,5 @@
 import React from "react";
-import DecisionMatrixApp from "../components/DecisionMatrixApp";
+import { DecisionMatrixApp } from "../components/DecisionMatrixApp";
 
 /**
  * 決断マトリックスツールのホームページ

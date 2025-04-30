@@ -2,13 +2,13 @@ import React, { useState, useEffect, useMemo } from "react";
 import { QUADRANT_DESCRIPTIONS, STEPS } from "../constants/matrix";
 import { useMatrix } from "../hooks/useMatrix";
 import type { QuadrantType } from "../types/matrix";
-import ReflectionVisibilityToggle from "./ReflectionVisibilityToggle";
+import { ReflectionVisibilityToggle } from "./ReflectionVisibilityToggle";
 import { Button } from "./atoms/Button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./atoms/Card";
 import { MatrixView } from "./matrix/MatrixView";
 import { TitleStep } from "./steps/TitleStep";
 
-const DecisionMatrixApp = () => {
+export const DecisionMatrixApp = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [viewMode, setViewMode] = useState<"edit" | "view">("edit");
   const [showReflection, setShowReflection] = useState(true);
@@ -43,7 +43,7 @@ const DecisionMatrixApp = () => {
     if (currentStep === 0 && currentMatrix.title.trim() === '') {
       return;
     }
-    
+
     if (currentStep < STEPS.length - 1) {
       setCurrentStep((prev) => prev + 1);
     }
@@ -57,12 +57,7 @@ const DecisionMatrixApp = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
-      <header className="bg-blue-600 text-white p-4">
-        <h1 className="text-2xl font-bold">決断マトリックスツール</h1>
-        <p className="text-sm">選択に迷ったときの意思決定をサポート</p>
-      </header>
-
+    <div className="flex flex-col bg-gray-100">
       <main className="flex-grow p-4">
         {/* 保存されたマトリックス一覧 */}
         {savedMatrices.length > 0 && (
@@ -113,7 +108,7 @@ const DecisionMatrixApp = () => {
               <p>{STEPS[currentStep]}</p>
 
               {/* 「全体の振り返り」表示切り替えチェックボックス（最初のページ以外で表示） */}
-              {currentStep > 0 && (
+              {currentStep > 0 && currentStep < 5 && (
                 <div className="mt-4 mb-2">
                   <ReflectionVisibilityToggle
                     showReflection={showReflection}
@@ -124,6 +119,16 @@ const DecisionMatrixApp = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* 全体の振り返り表示 (ステップ2-5) */}
+        {showReflection && currentStep > 0  && currentStep < 5 && (
+          <div className="bg-white p-4 rounded shadow mb-4">
+            <h2 className="text-xl font-semibold mb-2">
+              {currentMatrix.title}
+            </h2>
+            <MatrixView matrix={currentMatrix} showReflection={false} />
+          </div>
+        )}
 
         {/* マトリックスのタイトル入力 (ステップ1) */}
         {currentStep === 0 && (
@@ -142,7 +147,7 @@ const DecisionMatrixApp = () => {
 
         {/* ステップ2-5のレイアウト（入力と振り返りを横並びに） */}
         {currentStep >= 1 && currentStep <= 4 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             {/* 象限入力 (ステップ2-5) */}
             <Card>
               <CardHeader>
@@ -200,15 +205,6 @@ const DecisionMatrixApp = () => {
               </CardContent>
             </Card>
 
-            {/* 全体の振り返り表示 (ステップ2-5) */}
-            {showReflection && currentMatrix.title && (
-              <div className="bg-white p-4 rounded shadow">
-                <h2 className="text-xl font-semibold mb-2">
-                  {currentMatrix.title} - 全体の振り返り
-                </h2>
-                <MatrixView matrix={currentMatrix} showReflection={false} />
-              </div>
-            )}
           </div>
         )}
 
@@ -221,7 +217,6 @@ const DecisionMatrixApp = () => {
             <CardContent>
               <MatrixView matrix={currentMatrix} showReflection={false} />
 
-              {showReflection && (
                 <div className="mb-4">
                   <h3 className="font-bold mb-2">振り返りと決断</h3>
                   <p className="mb-4 text-gray-700">
@@ -240,7 +235,6 @@ const DecisionMatrixApp = () => {
                     className="w-full p-2 border rounded h-32"
                   />
                 </div>
-              )}
             </CardContent>
             <CardFooter>
               <Button onClick={saveMatrix} className="w-full" variant="default">
@@ -300,37 +294,32 @@ const DecisionMatrixApp = () => {
         )}
       </main>
 
-      <footer className="bg-gray-800 text-white p-4 text-center">
-        <p>&copy; 2025 決断マトリックスツール</p>
-      </footer>
-      
       {/* ステップナビゲーション（固定表示） */}
       {currentStep <= 5 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 border-t">
-          <div className="container mx-auto max-w-6xl flex justify-between">
-            <Button
-              type="button"
-              onClick={prevStep}
-              disabled={currentStep === 0}
-              variant={currentStep === 0 ? "ghost" : "default"}
-              className={currentStep === 0 ? "text-gray-300" : ""}
-            >
-              戻る
-            </Button>
-            <Button
-              type="button"
-              onClick={nextStep}
-              disabled={currentStep === STEPS.length - 1}
-              variant={currentStep === STEPS.length - 1 ? "ghost" : "default"}
-              className={currentStep === STEPS.length - 1 ? "text-gray-300" : ""}
-            >
-              次へ
-            </Button>
-          </div>
+        <div className="bg-white pt-4">
+        <div className="container mx-auto max-w-6xl flex justify-between">
+          <Button
+            type="button"
+            onClick={prevStep}
+            disabled={currentStep === 0}
+            variant={currentStep === 0 ? "ghost" : "default"}
+            className={currentStep === 0 ? "text-gray-300" : ""}
+          >
+            戻る
+          </Button>
+          <Button
+            type="button"
+            onClick={nextStep}
+            disabled={currentStep === STEPS.length - 1}
+            variant={currentStep === STEPS.length - 1 ? "ghost" : "default"}
+            className={currentStep === STEPS.length - 1 ? "text-gray-300" : ""}
+          >
+            次へ
+          </Button>
+        </div>
         </div>
       )}
     </div>
   );
 };
 
-export default DecisionMatrixApp;
