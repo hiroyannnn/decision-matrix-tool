@@ -321,29 +321,25 @@ export const DecisionMatrixApp = () => {
 
       {/* ステップナビゲーション（固定表示） */}
       {currentStep <= 5 && (
-        <div className="bg-white pt-4">
-          <div className="container mx-auto max-w-6xl flex justify-between">
-            <Button
-              type="button"
-              onClick={prevStep}
-              disabled={currentStep === 0}
-              variant={currentStep === 0 ? "ghost" : "default"}
-              className={currentStep === 0 ? "text-gray-300" : ""}
-            >
-              戻る
-            </Button>
-            <Button
-              type="button"
-              onClick={nextStep}
-              disabled={currentStep === STEPS.length - 1}
-              variant={currentStep === STEPS.length - 1 ? "ghost" : "default"}
-              className={
-                currentStep === STEPS.length - 1 ? "text-gray-300" : ""
-              }
-            >
-              次へ
-            </Button>
-          </div>
+        <div className="container mx-auto max-w-6xl flex justify-between mb-4">
+          <Button
+            type="button"
+            onClick={prevStep}
+            disabled={currentStep === 0}
+            variant={currentStep === 0 ? "ghost" : "default"}
+            className={currentStep === 0 ? "text-gray-300" : ""}
+          >
+            戻る
+          </Button>
+          <Button
+            type="button"
+            onClick={nextStep}
+            disabled={currentStep === STEPS.length - 1}
+            variant={currentStep === STEPS.length - 1 ? "ghost" : "default"}
+            className={currentStep === STEPS.length - 1 ? "text-gray-300" : ""}
+          >
+            次へ
+          </Button>
         </div>
       )}
     </div>
