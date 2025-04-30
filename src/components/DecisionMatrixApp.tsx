@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/router";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { QUADRANT_DESCRIPTIONS, STEPS } from "../constants/matrix";
 import { useMatrix } from "../hooks/useMatrix";
 import type { QuadrantType } from "../types/matrix";
@@ -19,8 +21,14 @@ import { SavedMatricesList } from "./matrix/SavedMatricesList";
 import { StepGuide } from "./steps/StepGuide";
 import { TitleStep } from "./steps/TitleStep";
 
-export const DecisionMatrixApp = () => {
-  const [currentStep, setCurrentStep] = useState(0);
+interface DecisionMatrixAppProps {
+  currentStep: number;
+}
+
+export const DecisionMatrixApp: React.FC<DecisionMatrixAppProps> = ({
+  currentStep: initialStep,
+}) => {
+  const router = useRouter();
   const [showReflection, setShowReflection] = useState(true);
 
   const {
@@ -53,19 +61,19 @@ export const DecisionMatrixApp = () => {
 
   // 次のステップに進む
   const nextStep = () => {
-    if (currentStep === 0 && currentMatrix.title.trim() === "") {
+    if (initialStep === 0 && currentMatrix.title.trim() === "") {
       return;
     }
 
-    if (currentStep < STEPS.length - 1) {
-      setCurrentStep((prev) => prev + 1);
+    if (initialStep < STEPS.length - 1) {
+      router.push(`/?step=${initialStep + 1}`, undefined, { shallow: true });
     }
   };
 
   // 前のステップに戻る
   const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep((prev) => prev - 1);
+    if (initialStep > 0) {
+      router.push(`/?step=${initialStep - 1}`, undefined, { shallow: true });
     }
   };
 
@@ -76,14 +84,14 @@ export const DecisionMatrixApp = () => {
           matrices={savedMatrices}
           onLoad={(index) => {
             loadMatrix(index);
-            setCurrentStep(6);
+            router.push("/?step=6", undefined, { shallow: true });
           }}
           onDelete={deleteMatrix}
         />
 
-        {currentStep !== 6 && (
+        {initialStep !== 6 && (
           <StepGuide
-            currentStep={currentStep}
+            currentStep={initialStep}
             steps={STEPS}
             showReflection={showReflection}
             onToggleReflection={setShowReflection}
@@ -92,10 +100,10 @@ export const DecisionMatrixApp = () => {
 
         <MatrixReflection
           matrix={currentMatrix}
-          showReflection={showReflection && currentStep > 0 && currentStep < 5}
+          showReflection={showReflection && initialStep > 0 && initialStep < 5}
         />
 
-        {currentStep === 0 && (
+        {initialStep === 0 && (
           <TitleStep
             title={currentMatrix.title}
             description={currentMatrix.description}
@@ -109,30 +117,30 @@ export const DecisionMatrixApp = () => {
           />
         )}
 
-        {currentStep >= 1 && currentStep <= 4 && (
+        {initialStep >= 1 && initialStep <= 4 && (
           <div className="grid grid-cols-1 gap-6">
             <QuadrantInput
               matrix={currentMatrix}
-              quadrantType={stepToQuadrant[currentStep] as QuadrantType}
+              quadrantType={stepToQuadrant[initialStep] as QuadrantType}
               quadrantDescription={
                 QUADRANT_DESCRIPTIONS[
-                  stepToQuadrant[currentStep] as QuadrantType
+                  stepToQuadrant[initialStep] as QuadrantType
                 ]
               }
               onAddItem={(text) =>
                 addItemToQuadrant(
-                  stepToQuadrant[currentStep] as QuadrantType,
+                  stepToQuadrant[initialStep] as QuadrantType,
                   text
                 )
               }
               onRemoveItem={(itemId) =>
-                removeItem(stepToQuadrant[currentStep] as QuadrantType, itemId)
+                removeItem(stepToQuadrant[initialStep] as QuadrantType, itemId)
               }
             />
           </div>
         )}
 
-        {currentStep === 5 && (
+        {initialStep === 5 && (
           <Card className="mb-6">
             <CardHeader>
               <CardTitle>{currentMatrix.title} - 全体の振り返り</CardTitle>
@@ -167,7 +175,7 @@ export const DecisionMatrixApp = () => {
           </Card>
         )}
 
-        {currentStep === 6 && (
+        {initialStep === 6 && (
           <MatrixViewMode
             matrix={currentMatrix}
             showReflection={showReflection}
@@ -184,15 +192,15 @@ export const DecisionMatrixApp = () => {
                 },
                 reflection: "",
               });
-              setCurrentStep(0);
+              router.push("/?step=0", undefined, { shallow: true });
             }}
           />
         )}
       </main>
 
-      {currentStep <= 5 && (
+      {initialStep <= 5 && (
         <StepNavigation
-          currentStep={currentStep}
+          currentStep={initialStep}
           totalSteps={STEPS.length}
           onPrev={prevStep}
           onNext={nextStep}
