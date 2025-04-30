@@ -21,25 +21,22 @@ type ItemInputProps = {
   value: string;
   onChange: (value: string) => void;
   onAdd: () => void;
+  onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 
-const ItemInput: FC<ItemInputProps> = ({ value, onChange, onAdd }) => {
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" && value.trim()) {
-        onAdd();
-      }
-    },
-    [value, onAdd]
-  );
-
+const ItemInput: FC<ItemInputProps> = ({
+  value,
+  onChange,
+  onAdd,
+  onKeyPress,
+}) => {
   return (
     <div className="flex mb-4">
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
+        onKeyPress={onKeyPress}
         placeholder="項目を入力してEnterキーを押すか、追加ボタンをクリックしてください"
         className="flex-grow p-2 border rounded-l"
         aria-label="項目の入力"
@@ -103,7 +100,6 @@ export const QuadrantInput: FC<QuadrantInputProps> = ({
   onRemoveItem,
 }) => {
   const [inputValue, setInputValue] = useState("");
-  const quadrant = matrix.quadrants[quadrantType];
 
   const handleAddItem = useCallback(() => {
     if (inputValue.trim()) {
@@ -112,11 +108,21 @@ export const QuadrantInput: FC<QuadrantInputProps> = ({
     }
   }, [inputValue, onAddItem]);
 
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter" && inputValue.trim()) {
+        onAddItem(inputValue.trim());
+        setInputValue("");
+      }
+    },
+    [inputValue, onAddItem]
+  );
+
   return (
     <Card>
       <QuadrantHeader
         description={quadrantDescription}
-        title={quadrant.title}
+        title={matrix.quadrants[quadrantType].title}
       />
       <CardContent>
         <div>
@@ -124,8 +130,12 @@ export const QuadrantInput: FC<QuadrantInputProps> = ({
             value={inputValue}
             onChange={setInputValue}
             onAdd={handleAddItem}
+            onKeyPress={handleKeyPress}
           />
-          <ItemList items={quadrant.items} onRemove={onRemoveItem} />
+          <ItemList
+            items={matrix.quadrants[quadrantType].items}
+            onRemove={onRemoveItem}
+          />
         </div>
       </CardContent>
     </Card>
