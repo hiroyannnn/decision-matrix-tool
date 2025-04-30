@@ -1,4 +1,9 @@
-/* Basic styling to replace Tailwind */
+/* 
+The following classes are commented out to prevent conflicts with Tailwind classes
+used by shadcn components. These were previously used to replace Tailwind functionality.
+*/
+
+/* 
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -227,3 +232,4 @@ body {
 .space-x-2 > * + * {
   margin-left: 0.5rem;
 }
+*/
