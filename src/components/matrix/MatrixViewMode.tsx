@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import { memo } from "react";
 import type { Matrix } from "../../types/matrix";
 import { Button } from "../atoms/Button";
 import {
@@ -22,12 +22,8 @@ type MatrixViewModeProps = {
  * @param {MatrixViewModeProps} props - コンポーネントのプロパティ
  * @returns {JSX.Element} 表示モードのJSX要素
  */
-export const MatrixViewMode: FC<MatrixViewModeProps> = ({
-  matrix,
-  showReflection,
-  onNewMatrix,
-}) => {
-  return (
+export const MatrixViewMode = memo(
+  ({ matrix, showReflection, onNewMatrix }: MatrixViewModeProps) => (
     <Card className="mb-6">
       <CardHeader>
         <CardTitle>{matrix.title}</CardTitle>
@@ -48,5 +44,7 @@ export const MatrixViewMode: FC<MatrixViewModeProps> = ({
         </Button>
       </CardFooter>
     </Card>
-  );
-};
+  )
+);
+
+MatrixViewMode.displayName = "MatrixViewMode";
