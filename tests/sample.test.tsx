@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ComponentProps } from "react";
 import { describe, expect, it, vi } from "vitest";
 
-// サンプルコンポーネント
-const Button = ({ onClick, children }) => {
+const Button = ({ onClick, children }: ComponentProps<"button">) => {
   return (
     <button onClick={onClick} data-testid="test-button" type="button">
       {children}
@@ -16,8 +16,7 @@ describe("Button", () => {
     render(<Button>クリック</Button>);
 
     const buttonElement = screen.getByTestId("test-button");
-    expect(buttonElement).toBeInTheDocument();
-    expect(buttonElement).toHaveTextContent("クリック");
+    expect(buttonElement.textContent).toBe("クリック");
   });
 
   it("クリックするとイベントハンドラーが呼ばれる", async () => {
