@@ -2,6 +2,17 @@ import { useEffect, useState } from "react";
 import { INITIAL_MATRIX } from "../constants/matrix";
 import type { Matrix } from "../types/matrix";
 
+const readSavedMatrices = (): Matrix[] => {
+  const savedData = localStorage.getItem("decisionMatrices");
+  if (savedData === null) return [];
+
+  const matrices = JSON.parse(savedData);
+  if (!Array.isArray(matrices)) {
+    throw new Error("保存データがマトリックスの配列ではありません");
+  }
+  return matrices;
+};
+
 export const useMatrix = () => {
   const [savedMatrices, setSavedMatrices] = useState<Matrix[]>([]);
   const [currentMatrix, setCurrentMatrix] = useState<Matrix>({
@@ -11,9 +22,11 @@ export const useMatrix = () => {
   const [nextItemId, setNextItemId] = useState(1);
 
   useEffect(() => {
-    const savedData = localStorage.getItem("decisionMatrices");
-    if (savedData) {
-      setSavedMatrices(JSON.parse(savedData));
+    try {
+      setSavedMatrices(readSavedMatrices());
+    } catch (error) {
+      // 壊れたデータは上書きせず、復旧できるようストレージに残す。
+      console.error("保存データの読み込みエラー:", error);
     }
   }, []);
 
@@ -25,10 +38,7 @@ export const useMatrix = () => {
     });
 
     try {
-      const savedData = localStorage.getItem("decisionMatrices");
-      console.log("現在の保存データ:", savedData);
-
-      const currentSavedMatrices = savedData ? JSON.parse(savedData) : [];
+      const currentSavedMatrices = readSavedMatrices();
       console.log("現在のマトリックス一覧:", currentSavedMatrices);
 
       const updatedMatrices = [...currentSavedMatrices];
