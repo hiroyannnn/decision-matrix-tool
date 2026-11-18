@@ -29,9 +29,6 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.0",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.503.0",
@@ -39,22 +36,44 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
-    "tailwind-merge": "^3.2.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwind-merge": "^3.2.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
     "@types/node": "^22.14.1",
     "@types/react": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
-    "@vitest/ui": "^3.1.1",
+    "@vitest/ui": "^4.1.12",
     "autoprefixer": "^10.4.14",
     "c8": "^10.1.3",
-    "happy-dom": "^17.4.4",
-    "postcss": "^8.4.27",
+    "happy-dom": "^21.0.4",
+    "postcss": "^8.5.23",
     "tailwindcss": "^3.3.3",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.8.3",
-    "vite": "^6.3.4",
-    "vitest": "^3.1.1"
+    "vite": "^6.4.5",
+    "vitest": "^4.1.12"
+  },
+  "pnpm": {
+    "overrides": {
+      "@babel/core@7": "^7.29.6",
+      "brace-expansion@2": "^2.1.7",
+      "browserslist@4": "^4.28.7",
+      "fflate@0.8": "^0.8.3",
+      "glob@10": "^10.5.0",
+      "minimatch@9": "^9.0.7",
+      "nanoid@3": "^3.3.18",
+      "picomatch@2": "^2.3.2",
+      "picomatch@4": "^4.0.4",
+      "postcss@8": "^8.5.23",
+      "postcss-selector-parser@6": "^6.1.5",
+      "rollup@4": "^4.59.0",
+      "source-map-js@1": "^1.2.2",
+      "vitest>jsdom": "-",
+      "yaml@2": "^2.8.3"
+    }
   }
 }
