@@ -1,12 +1,11 @@
 import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      // Next.jsのimportエイリアスをサポート
       "@": resolve(__dirname, "./"),
       "@components": resolve(__dirname, "./src/components"),
       "@styles": resolve(__dirname, "./styles"),
@@ -17,7 +16,6 @@ export default defineConfig({
     environment: "happy-dom",
     globals: true,
     setupFiles: ["./tests/setup.tsx"],
-    // Next.jsのページとコンポーネントを対象に含める
     include: [
       "./pages/**/*.{test,spec}.{js,jsx,ts,tsx}",
       "./src/**/*.{test,spec}.{js,jsx,ts,tsx}",
